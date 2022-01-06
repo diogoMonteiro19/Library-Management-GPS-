@@ -4,6 +4,7 @@ import gps.library.logic.data.Model;
 import gps.library.logic.states.IState;
 import gps.library.logic.states.InitialState;
 import gps.library.logic.states.UserState;
+import gps.library.logic.states.AdminState;
 import gps.library.ui.graphic.states.LoginStatePane;
 
 import java.util.List;
@@ -14,8 +15,9 @@ public class Library {
 
     public Library(){
         model = new Model();
-        state = new InitialState(model);
+//        state = new InitialState(model);
 //        state = new UserState(model);
+        state = new AdminState(model);
         state.capacity();
     }
 

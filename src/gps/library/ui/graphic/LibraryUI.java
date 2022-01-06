@@ -1,6 +1,7 @@
 package gps.library.ui.graphic;
 
 import gps.library.logic.LibraryObservable;
+import gps.library.ui.graphic.states.AdminStatePane;
 import gps.library.ui.graphic.states.InitialStatePane;
 import gps.library.ui.graphic.states.LoginStatePane;
 import gps.library.ui.graphic.states.UserStatePane;
@@ -16,6 +17,7 @@ public class LibraryUI extends BorderPane {
     private InitialStatePane initialStatePane;
     private LoginStatePane loginStatePane;
     private UserStatePane userStatePane;
+    private AdminStatePane adminStatePane;
 
     public LibraryUI(LibraryObservable libObs){
         this.libObs = libObs;
@@ -29,6 +31,7 @@ public class LibraryUI extends BorderPane {
         initialStatePane = new InitialStatePane(libObs);
         loginStatePane = new LoginStatePane(libObs);
         userStatePane = new UserStatePane(libObs);
+        adminStatePane = new AdminStatePane(libObs);
     }
 
     private void createMenus(){
@@ -55,6 +58,7 @@ public class LibraryUI extends BorderPane {
             case INITIAL_LOGOUT, INITIAL_LOGIN -> setCenter(initialStatePane);
             case LOGIN_REGISTER -> setCenter(loginStatePane);
             case USER -> setCenter(userStatePane);
+            case ADMIN -> setCenter(adminStatePane);
         }
     }
 }

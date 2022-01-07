@@ -10,6 +10,24 @@ public class AdminState extends StateAdapter {
     }
 
     @Override
+    public IState updateCapacity(int capacity) {
+        getModel().updateCapacity(capacity);
+        return new AdminState(getModel());
+    }
+
+    @Override
+    public IState confirmReserve(int id) {
+        getModel().confirmReserve(id);
+        return new AdminState(getModel());
+    }
+
+    @Override
+    public IState cancelReserve(int id) {
+        getModel().cancelReserve(id);
+        return new AdminState(getModel());
+    }
+
+    @Override
     public States getAtualState(){
         return States.ADMIN;
     }

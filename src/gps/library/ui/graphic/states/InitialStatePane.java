@@ -4,6 +4,8 @@ import gps.library.logic.LibraryObservable;
 import gps.library.logic.States;
 import gps.library.ui.graphic.MyButton;
 import gps.library.ui.graphic.MyLabel;
+import gps.library.ui.graphic.MyProgressBar;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.chart.BarChart;
@@ -26,7 +28,7 @@ public class InitialStatePane extends BorderPane {
     MyButton logout;
     MyButton login;
     MyButton reserves;
-    ProgressBar progress;
+    MyProgressBar progress;
 
     VBox center;
     VBox top, bottom;
@@ -41,7 +43,7 @@ public class InitialStatePane extends BorderPane {
     private void createWindow(){
         welcomeTxt = new MyLabel("Bem-vindo à biblioteca do ISEC!", title);
         noteTxt = new MyLabel("Estimativa da lotação da biblioteca:", minor);
-        progress = new ProgressBar();
+        progress = new MyProgressBar();
         percent = new MyLabel(title);
 
         logout = new MyButton("Terminar sessão");
@@ -78,8 +80,12 @@ public class InitialStatePane extends BorderPane {
     }
 
     public void update(){
-        progress = new ProgressBar((double) libObs.getCapacity() / 100);
+        progress = new MyProgressBar((double) libObs.getCapacity() / 100);
+
         center = new VBox(30, welcomeTxt, noteTxt, progress, percent);
+
+        progress.prefWidthProperty().bind(center.widthProperty().subtract(200));
+        progress.setPrefHeight(25);
         center.setAlignment(Pos.CENTER);
         setVisible(libObs.getAtualState() == States.INITIAL_LOGIN || libObs.getAtualState() == States.INITIAL_LOGOUT);
         if(libObs.getAtualState() == States.INITIAL_LOGIN){
@@ -93,7 +99,8 @@ public class InitialStatePane extends BorderPane {
         bottom.setAlignment(Pos.BOTTOM_RIGHT);
         setCenter(center);
         setBottom(bottom);
+        System.out.println(center.getWidth());
 
-        percent.setText(String.valueOf(libObs.getCapacity()));
+        percent.setText(String.valueOf(libObs.getCapacity())+ " %");
     }
 }

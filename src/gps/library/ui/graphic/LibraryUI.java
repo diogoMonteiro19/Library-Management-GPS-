@@ -1,10 +1,8 @@
 package gps.library.ui.graphic;
 
 import gps.library.logic.LibraryObservable;
-import gps.library.ui.graphic.states.AdminStatePane;
-import gps.library.ui.graphic.states.InitialStatePane;
-import gps.library.ui.graphic.states.LoginStatePane;
-import gps.library.ui.graphic.states.UserStatePane;
+import gps.library.logic.states.ReservationState;
+import gps.library.ui.graphic.states.*;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -18,6 +16,7 @@ public class LibraryUI extends BorderPane {
     private LoginStatePane loginStatePane;
     private UserStatePane userStatePane;
     private AdminStatePane adminStatePane;
+    private ReservationStatePane reservationStatePane;
 
     public LibraryUI(LibraryObservable libObs){
         this.libObs = libObs;
@@ -32,6 +31,7 @@ public class LibraryUI extends BorderPane {
         loginStatePane = new LoginStatePane(libObs);
         userStatePane = new UserStatePane(libObs);
         adminStatePane = new AdminStatePane(libObs);
+        reservationStatePane = new ReservationStatePane(libObs);
     }
 
     private void createMenus(){
@@ -59,6 +59,7 @@ public class LibraryUI extends BorderPane {
             case LOGIN_REGISTER -> setCenter(loginStatePane);
             case USER -> setCenter(userStatePane);
             case ADMIN -> setCenter(adminStatePane);
+            case RESERVATION -> setCenter(reservationStatePane);
         }
     }
 }

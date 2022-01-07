@@ -39,8 +39,28 @@ public abstract class StateAdapter implements IState {
     }
 
     @Override
+    public IState reserveOffice() {
+        return new ReservationState(getModel());
+    }
+
+    @Override
+    public IState updateCapacity(int capacity) {
+        return this;
+    }
+
+    @Override
+    public IState confirmReserve(int id) {
+        return this;
+    }
+
+    @Override
     public IState cancelReserve(int id) {
         return this;
+    }
+
+    @Override
+    public IState backToUser() {
+        return new UserState(getModel());
     }
 
     public final Model getModel(){ return model; }

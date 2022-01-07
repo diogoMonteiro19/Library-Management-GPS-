@@ -17,7 +17,7 @@ public class UserState extends StateAdapter{
 
     @Override
     public IState capacity() {
-        getModel().getCapacity();
+        getModel().queryCapacity();
         return new InitialState(getModel());
     }
 

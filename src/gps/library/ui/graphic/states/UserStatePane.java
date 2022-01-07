@@ -7,12 +7,16 @@ import gps.library.ui.graphic.MyLabel;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public class UserStatePane extends BorderPane {
@@ -106,8 +110,7 @@ public class UserStatePane extends BorderPane {
 
         capacity.setOnAction(e -> libObs.capacity());
 
-        // TODO a partir daqui
-//        reserveOffice.setOnAction(e -> libObs.reserveOffice());
+        reserveOffice.setOnAction(e -> libObs.reserveOffice());
     }
 
     private void registerObserver(){
@@ -116,6 +119,7 @@ public class UserStatePane extends BorderPane {
 
     private void update(){
         setVisible(libObs.getAtualState() == States.USER);
+
         List<?> reserves = libObs.getReserves();
         for(int i = 0; i < reserves.size(); i++){
             final int id = i;
@@ -136,7 +140,36 @@ public class UserStatePane extends BorderPane {
             gridPane.add(fillRight, 1, i+1);
             GridPane.setFillWidth(fillLeft, true);
             GridPane.setFillHeight(fillLeft, true);
-            cancel.setOnAction(e -> libObs.cancelReserve(id));
+            cancel.setOnAction(e -> {
+                ButtonType yes = new ButtonType("Sim",  ButtonBar.ButtonData.YES);
+                ButtonType no = new ButtonType("Não", ButtonBar.ButtonData.NO);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "", yes, no);
+                alert.setTitle("Alerta");
+                alert.setHeaderText("Para esse dia já não existem gabinetes livres.");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if(result.isPresent()){
+                    if(result.get() == yes){
+                        libObs.cancelReserve(id);
+                    }
+                }
+            });
+        }
+
+        /** TODO DEBATER ESTA PARTE DE IR BUSCAR AS PENALIZAÇÕES */
+        if(libObs.getAtualState() == States.USER) {
+            int penalties = libObs.getPenalties();
+            if (penalties > 1) {
+                ButtonType ok = new ButtonType("Sair", ButtonBar.ButtonData.OK_DONE);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "", ok);
+                alert.setTitle("Alerta");
+                alert.setHeaderText("Cancelou demasiadas reservas. Durante " + 24 * penalties + " horas " +
+                        "não consegue efetuar reservas.");
+                alert.showAndWait();
+                reserveOffice.setDisable(true);
+            } else {
+                reserveOffice.setDisable(false);
+            }
         }
     }
 }

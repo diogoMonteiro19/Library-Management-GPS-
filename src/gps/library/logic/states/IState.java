@@ -16,7 +16,15 @@ public interface IState {
 
     IState register(String number, String mail, String password, String confPassword);
 
+    IState reserveOffice();
+
+    IState updateCapacity(int capacity);
+
+    IState confirmReserve(int id);
+
     IState cancelReserve(int id);
+
+    IState backToUser();
 
     public States getAtualState();
 }

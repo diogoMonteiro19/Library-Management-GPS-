@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
-    int capacity = 50;
+    int capacity = 19;
 
 
     /**
@@ -53,12 +53,35 @@ public class Model {
 
     }
 
+    /**
+     * Gets the reserves from the database to the admin
+     */
+    public void queryAdminReserves(){
+
+    }
 
     /**
      * Queries the capacity from the database
      * and sets {@code capacity} to that value
      */
     public void queryCapacity(){
+
+    }
+
+    /**
+     * Updates the capacity on the database
+     * @param capacity - percentage of capacity
+     */
+    public void updateCapacity(int capacity){
+
+    }
+
+    /**
+     * Confirmation of a reserve from the admin
+     * @param id - {@code int} representing the id
+     *          of the reserve
+     */
+    public void confirmReserve(int id){
 
     }
 
@@ -72,6 +95,44 @@ public class Model {
 
     }
 
+    /**
+     * Queries the database if there's offices available for a given day
+     * and the available hours
+     * @param day - the day
+     * @param <T> - this can be a {@code String, Timestamp, LocalDate..}
+     * @return {@code true} if there's available hours, {@code false} if there isn't
+     */
+    public <T> boolean selectedDay(T day){
+        // Fazer logo aqui query das horas que se pode ter
+        return false;
+    }
+
+    /**
+     * Stores the hours selected from the user
+     * @param selectedFromUser - {@code List}
+     * @param <T> - type from the {@code List}
+     * @return - decide the type of return
+     */
+    public <T> boolean selectedHours(T selectedFromUser){
+        return true;
+    }
+
+    /**
+     * Makes a new reservation on database, using the information
+     * gathered on {@code selectedDay()} and {@code selectedHours()}
+     * @param students - a list of the students that are members of this
+     *                 reservation
+     * @param <T> - type of {@code param} received
+     * @return - decide the type of return
+     */
+    public <T> boolean newReserve(T students){
+        return true;
+    }
+
+    /**
+     * Gets the list of reserves queried from this user
+     * @return a list of all reserves of this user
+     */
     public List<?> getReserves(){
         List<Timestamp> debug = new ArrayList<>();
         for(int i = 0; i < 50; i++){
@@ -81,8 +142,45 @@ public class Model {
         return debug;
     }
 
+    /**
+     * Gets the list of reserves for the admin
+     * @return a list of reserves from
+     * AQUI NAO SEI SE QUEREM METER DESTE DIA OU O QUE
+     */
+    public List<?> getAdminReserves(){
+        List<Timestamp> debug = new ArrayList<>();
+        for(int i = 0; i < 50; i++){
+            Timestamp ts = Timestamp.from(Instant.now());
+            debug.add(ts);
+        }
+        return debug;
+    }
+
+    /**
+     * Gets the actual capacity that was queried from the database
+     * @return an {@code int} that represent the actual capacity
+     */
     public int getCapacity(){
         return capacity;
     }
 
+    /**
+     * Gets the hours that an office is available
+     * @return a {@code List} with all the available hours
+     */
+    public List<?> getHours(){
+        List<Integer> debug = new ArrayList<>();
+        for(int i = 0; i < 5; i++){
+            debug.add(10 + i);
+        }
+        return debug;
+    }
+
+    /**
+     * How much penalties a user have
+     * @return {@code int} - the number of penalties
+     */
+    public int getPenalties(){
+        return 2;
+    }
 }

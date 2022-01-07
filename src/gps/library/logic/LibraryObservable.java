@@ -53,9 +53,43 @@ public class LibraryObservable {
         forceUpdate();
     }
 
+    public void reserveOffice(){
+        lib.reserveOffice();
+        forceUpdate();
+    }
+
+    public void updateCapacity(int capacity){
+        lib.updateCapacity(capacity);
+        forceUpdate();
+    }
+
+    public void confirmReserve(int id){
+        lib.confirmReserve(id);
+        forceUpdate();
+    }
+
     public void cancelReserve(int id){
         lib.cancelReserve(id);
         forceUpdate();
+    }
+
+    public void backToUser(){
+        lib.backToUser();
+        forceUpdate();
+    }
+
+    // method called directly to model
+
+    public <T> boolean selectedDay(T day){
+        return lib.selectedDay(day);
+    }
+
+    public <T> boolean selectedHours(T selected){
+        return lib.selectedHours(selected);
+    }
+
+    public <T> boolean newReserve(T students){
+        return lib.newReserve(students);
     }
 
     // getters from model
@@ -63,6 +97,12 @@ public class LibraryObservable {
     public int getCapacity(){ return lib.getCapacity(); }
 
     public List<?> getReserves(){ return lib.getReserves(); }
+
+    public List<?> getAdminReserves() { return lib.getAdminReserves(); }
+
+    public List<?> getHours(){ return lib.getHours(); }
+
+    public int getPenalties(){ return lib.getPenalties(); }
 
     public States getAtualState(){ return lib.getAtualState(); }
 }

@@ -1,11 +1,7 @@
 package gps.library.logic;
 
 import gps.library.logic.data.Model;
-import gps.library.logic.states.IState;
-import gps.library.logic.states.InitialState;
-import gps.library.logic.states.UserState;
-import gps.library.logic.states.AdminState;
-import gps.library.ui.graphic.states.LoginStatePane;
+import gps.library.logic.states.*;
 
 import java.util.List;
 
@@ -15,9 +11,9 @@ public class Library {
 
     public Library(){
         model = new Model();
-//        state = new InitialState(model);
-//        state = new UserState(model);
-        state = new AdminState(model);
+        state = new InitialState(model);
+        state = new ReservationState(model);
+//        state = new AdminState(model);
         state.capacity();
     }
 
@@ -41,8 +37,38 @@ public class Library {
         setState(state.register(number, mail, password, confPassword));
     }
 
+    public void reserveOffice(){
+        setState(state.reserveOffice());
+    }
+
+    public void updateCapacity(int capacity){
+        setState(state.updateCapacity(capacity));
+    }
+
+    public void confirmReserve(int id){
+        setState(state.confirmReserve(id));
+    }
+
     public void cancelReserve(int id){
         setState(state.cancelReserve(id));
+    }
+
+    public void backToUser(){
+        setState(state.backToUser());
+    }
+
+    // method called directly to model
+
+    public <T> boolean selectedDay(T day){
+        return model.selectedDay(day);
+    }
+
+    public <T> boolean selectedHours(T selected){
+        return model.selectedHours(selected);
+    }
+
+    public <T> boolean newReserve(T students){
+        return model.newReserve(students);
     }
 
     // getters from model
@@ -50,6 +76,12 @@ public class Library {
     public int getCapacity(){ return model.getCapacity(); }
 
     public List<?> getReserves(){ return model.getReserves(); }
+
+    public List<?> getAdminReserves() { return model.getAdminReserves(); }
+
+    public List<?> getHours() { return model.getHours(); }
+
+    public int getPenalties(){ return model.getPenalties(); }
 
     public States getAtualState(){ return state.getAtualState(); }
 }

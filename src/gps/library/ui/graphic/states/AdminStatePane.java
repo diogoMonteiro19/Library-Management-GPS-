@@ -201,7 +201,7 @@ public class AdminStatePane extends BorderPane {
     private void update(){
         setVisible(libObs.getAtualState() == States.ADMIN);
         /** TODO VER ESTA CHECKBOX OU SE É PARA POR MESMO UMA CHECKBOX*/
-        URL url = getClass().getClassLoader().getResource("src/gps/library/resources/images/checkbox.png");
+        URL url = getClass().getClassLoader().getResource("gps/library/resources/images/checkbox.png");
         Image icon = new Image(String.valueOf(url));
 
         /** TODO IR BUSCAR AS RESERVAS DO ADMIN */

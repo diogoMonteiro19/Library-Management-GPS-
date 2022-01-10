@@ -4,6 +4,7 @@ import gps.library.logic.LibraryObservable;
 import gps.library.logic.States;
 import gps.library.ui.graphic.MyButton;
 import gps.library.ui.graphic.MyLabel;
+import gps.library.ui.graphic.MyPasswordField;
 import gps.library.ui.graphic.MyTextField;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -27,16 +28,16 @@ public class LoginStatePane extends BorderPane {
     MyLabel mailLbl;
     MyTextField mailFld;
     MyLabel passwordLbl;
-    MyTextField passwordFld;
+    MyPasswordField passwordFld;
     MyLabel registerLbl;
     MyLabel numberLbl;
     MyTextField numberFld;
     MyLabel mailRegisterLbl;
     MyTextField mailRegisterFld;
     MyLabel passwordRegisterLbl;
-    MyTextField passwordRegisterFld;
+    MyPasswordField passwordRegisterFld;
     MyLabel confPasswordRegisterLbl;
-    MyTextField confPasswordRegisterFld;
+    MyPasswordField confPasswordRegisterFld;
     MyButton loginBtn;
     MyButton registerBtn;
     MyButton back;
@@ -54,7 +55,7 @@ public class LoginStatePane extends BorderPane {
         mailLbl = new MyLabel("Email: ", minor);
         mailFld = new MyTextField(minor);
         passwordLbl = new MyLabel("Password:", minor);
-        passwordFld = new MyTextField(minor);
+        passwordFld = new MyPasswordField(minor);
 
         registerLbl = new MyLabel("Register", title);
 
@@ -63,9 +64,9 @@ public class LoginStatePane extends BorderPane {
         mailRegisterLbl = new MyLabel("Email:", minor);
         mailRegisterFld = new MyTextField(minor);
         passwordRegisterLbl = new MyLabel("Password:", minor);
-        passwordRegisterFld = new MyTextField(minor);
+        passwordRegisterFld = new MyPasswordField(minor);
         confPasswordRegisterLbl = new MyLabel("Confirmação Password:", minor);
-        confPasswordRegisterFld = new MyTextField(minor);
+        confPasswordRegisterFld = new MyPasswordField(minor);
 
         loginBtn = new MyButton("Login");
         registerBtn = new MyButton("Register");

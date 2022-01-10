@@ -5,19 +5,27 @@ import java.sql.*;
 public class LogIn {
     private String email,password;
     private int students_id;
+    private boolean logged = false;
+    private boolean isAdmin = false;
 
-    public LogIn(String email,String password,int students_id){
+    public LogIn (){}
+
+    public LogIn(String email,String password ){
         this.email=email;
         this.password = password;
-        this.students_id  = students_id;
+    }
+    public LogIn(String email,String password,int students_id ){
+        this.email=email;
+        this.password = password;
+        this.students_id = students_id;
     }
 
     public boolean verifyLogInExists(){
         String query = "SELECT * FROM users";
         try {
-            String myDriver = "org.gjt.mm.mysql.Driver TODO:METER CONEXÕES A BD REAL";
-            String myUrl = "jdbc:mysql://localhost/test TODO:METER CONEXÕES A BD REAL";
-            Class.forName(myDriver);
+            String myDriver = "jdbc:sqlite:\\";
+            String myUrl = "jdbc:sqlite:\\D:\\ISEC\\LM\\Library-Management-GPS-\\library";
+            //Class.forName(myDriver);
             Connection conn = DriverManager.getConnection(myUrl, "root", "");
 
             Statement st = conn.createStatement();
@@ -26,37 +34,57 @@ public class LogIn {
 
             while (rs.next())
             {
-                if(email == rs.getString("mail") && password == rs.getString("password")){
-                    return true;
+                if(email.equals(rs.getString("mail")) && password.equals(rs.getString("password"))){
+                    if(rs.getInt("students_id") == 0){
+                        isAdmin = true;
+                    }
+                    logged = true;
+                    return true;//Pessoa ja existe na BD
                 }
             }
         }catch (Exception e){
             System.err.println("Got an exception! ");
             System.err.println(e.getMessage());
         }
-        return false;
+        System.out.println(email);
+        return false;//pessoa nao existe na BD
     }
 
-    public void createNewUser(){
+    public boolean createNewUser(){
         if(!verifyLogInExists()){
             try {
                 // create a mysql database connection
-                String myDriver = "org.gjt.mm.mysql.Driver TODO:METER CONEXÕES A BD REAL";
-                String myUrl = "jdbc:mysql://localhost/test TODO:METER CONEXÕES A BD REAL";
-                Class.forName(myDriver);
+                String myDriver = "jdbc:sqlite:\\";
+                String myUrl = "jdbc:sqlite:\\\\D:\\ISEC\\LM\\Library-Management-GPS-\\library";
+                //Class.forName(myDriver);
                 Connection conn = DriverManager.getConnection(myUrl, "root", "");
 
                 String query = " insert into users (password,mail,students_id)"
-                        + " values (?, ?, ?)";
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                preparedStmt.setString(1, password);
-                preparedStmt.setString(2, email);
-                preparedStmt.setInt(3, students_id);
+                        + " values ('"+password+"','"+email+"',"+students_id+")";
+                Statement st = conn.createStatement();
+                if(st.executeUpdate(query) < 1){
+                    return false;
+                }
+                logged = true;
+                return true;
             }catch (Exception e)
             {
                 System.err.println("Got an exception!");
                 System.err.println(e.getMessage());
+                return false;
             }
         }
+        return false;
+    }
+
+    public boolean isLogged() {
+        return logged;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+    public void logout(){
+        logged = false;
     }
 }

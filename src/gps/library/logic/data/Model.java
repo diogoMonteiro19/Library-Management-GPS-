@@ -1,22 +1,32 @@
 package gps.library.logic.data;
 
+import logIn.LogIn;
+
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Model {
     int capacity = 19;
+    LogIn novoLogin;
 
-
+    public Model(){
+        novoLogin = new LogIn();
+    }
     /**
      * @return {@code true} if user is logged, {@code false} if
      * he isn't
      */
-    public boolean isLogged(){
-        return true;
-    }
 
+
+    public boolean isLogged(){
+        return novoLogin.isLogged();
+    }
+    public boolean isAdmin(){
+        return novoLogin.isAdmin();
+    }
     /**
      * Login a user querying the database
      * @param mail - user mail
@@ -24,7 +34,8 @@ public class Model {
      * @return {@code true} if success, {@code false} if failed.
      */
     public boolean login(String mail, String password){
-        return true;
+        novoLogin = new LogIn(mail,password);
+        return novoLogin.verifyLogInExists();
     }
 
     /**
@@ -35,15 +46,19 @@ public class Model {
      * @param confPassword - same password checker
      * @return {@code true} if success, {@code false} if failed.
      */
-    public boolean register(String number, String mail, String password, String confPassword){
-        return true;
+    public boolean register(String number, String mail, String password,String confPassword){
+        if(password.equals(confPassword)){
+            novoLogin = new LogIn(mail,password,Integer.parseInt(number));
+            return novoLogin.createNewUser();
+        }
+        return false;
     }
 
     /**
      * Logout a user...Nothing to do with database
      */
     public void logout(){
-
+        novoLogin.logout();
     }
 
     /**

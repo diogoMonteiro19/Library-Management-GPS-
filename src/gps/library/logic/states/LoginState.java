@@ -17,7 +17,10 @@ public class LoginState extends StateAdapter {
 
     @Override
     public IState login(String mail, String password) {
-        if(getModel().login(mail, password)){
+        if(getModel().login(mail, password) ){
+            if(getModel().isAdmin()){
+                return new AdminState(getModel());
+            }
             return new UserState(getModel());
         }
         else{

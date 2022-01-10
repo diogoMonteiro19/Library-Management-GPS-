@@ -7,14 +7,16 @@ public class ReservaAdmin {
 
     public void UpdateReserve(int IdReserve){
 
+
+
             try {
                 // create a mysql database connection
-                String myDriver = "org.gjt.mm.mysql.Driver TODO:METER CONEXÕES A BD REAL";
-                String myUrl = "jdbc:mysql://localhost/test TODO:METER CONEXÕES A BD REAL";
-                Class.forName(myDriver);
-                Connection conn = DriverManager.getConnection(myUrl, "root", "");
+                String myUrl = "jdbc:sqlite:library.db";
+                Connection conn = DriverManager.getConnection(myUrl);
+                Statement st = conn.createStatement();
 
-                String query = " update set reserves where reservers_id = "+ IdReserve + " confirm =1 ";
+                st.executeUpdate( " update set reserves where reservers_id = "+ IdReserve + " confirm =1 ");
+
 
 
             }catch (Exception e)
@@ -28,12 +30,11 @@ public class ReservaAdmin {
 
             try {
                 // create a mysql database connection
-                String myDriver = "org.gjt.mm.mysql.Driver TODO:METER CONEXÕES A BD REAL";
-                String myUrl = "jdbc:mysql://localhost/test TODO:METER CONEXÕES A BD REAL";
-                Class.forName(myDriver);
-                Connection conn = DriverManager.getConnection(myUrl, "root", "");
+                String myUrl = "jdbc:sqlite:library.db";
+                Connection conn = DriverManager.getConnection(myUrl);
+                Statement st = conn.createStatement();
 
-                String query = "Delete from reserves where reservers_id = "+ IdReserve + "" ;
+                st.executeUpdate( "Delete from reserves where reservers_id = "+ IdReserve + "" );
 
             }catch (Exception e)
             {

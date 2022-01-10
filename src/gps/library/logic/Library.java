@@ -3,6 +3,10 @@ package gps.library.logic;
 import gps.library.logic.data.Model;
 import gps.library.logic.states.*;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Library {
@@ -12,8 +16,8 @@ public class Library {
     public Library(){
         model = new Model();
         state = new InitialState(model);
-        state = new ReservationState(model);
-//        state = new AdminState(model);
+    //  state = new ReservationState(model);
+        state = new AdminState(model);
         state.capacity();
     }
 
@@ -77,7 +81,7 @@ public class Library {
 
     public List<?> getReserves(){ return model.getReserves(); }
 
-    public List<?> getAdminReserves() { return model.getAdminReserves(); }
+    public HashMap<Integer, String[]> getAdminReserves() { return model.getAdminReserves(); }
 
     public List<?> getHours() { return model.getHours(); }
 

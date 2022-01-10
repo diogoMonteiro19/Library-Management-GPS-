@@ -18,8 +18,8 @@ import javafx.scene.text.Font;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.*;
 
 public class AdminStatePane extends BorderPane {
     Background btnBkg = new Background(new BackgroundFill(Color.rgb(201, 201, 201), new CornerRadii(10), Insets.EMPTY));
@@ -204,11 +204,12 @@ public class AdminStatePane extends BorderPane {
         URL url = getClass().getClassLoader().getResource("gps/library/resources/images/checkbox.png");
         Image icon = new Image(String.valueOf(url));
 
-        /** TODO IR BUSCAR AS RESERVAS DO ADMIN */
-        List<?> reserves = libObs.getAdminReserves();
-        for(int i = 0; i < reserves.size(); i++){
+
+        int id = 0;
+        HashMap<Integer, String[]> reserves = libObs.getAdminReserves();
+        for(Integer i : reserves.keySet()) {
             ImageView view = new ImageView(icon);
-            final int id = i;
+
             StackPane fillLeft = new StackPane();
             StackPane fillMid = new StackPane();
             StackPane fillRight = new StackPane();
@@ -217,37 +218,55 @@ public class AdminStatePane extends BorderPane {
             cancel.setBackground(null);
             confirm.setBackground(null);
             confirm.setGraphic(view);
-            MyLabel reserve = new MyLabel(reserves.get(i).toString(), minor);
+            MyLabel reserve = new MyLabel(reserves.get(i)[0], minor);
 
             fillLeft.getChildren().add(reserve);
             fillMid.getChildren().add(cancel);
-            fillRight.getChildren().add(confirm);
+            if (reserves.get(i)[1].equals("1")) {
+                fillRight.getChildren().add(confirm);
+            } else {// caso não esteja confirmada
 
-            if(i%2 == 0) {
+            }
+
+            if (id == 0) {
                 fillLeft.setBackground(btnBkg);
                 fillMid.setBackground(btnBkg);
                 fillRight.setBackground(btnBkg);
+                id = 1;
             }
-            gridPane.add(fillLeft, 0, i+1);
-            gridPane.add(fillMid, 1, i+1);
-            gridPane.add(fillRight, 2, i+1);
+            gridPane.add(fillLeft, 0, i + 1);
+            gridPane.add(fillMid, 1, i + 1);
+            gridPane.add(fillRight, 2, i + 1);
             GridPane.setFillWidth(fillLeft, true);
             GridPane.setFillHeight(fillLeft, true);
             cancel.setOnAction(e -> {
-                ButtonType yes = new ButtonType("Sim",  ButtonBar.ButtonData.YES);
+                ButtonType yes = new ButtonType("Sim", ButtonBar.ButtonData.YES);
                 ButtonType no = new ButtonType("Não", ButtonBar.ButtonData.NO);
                 Alert alert = new Alert(Alert.AlertType.ERROR, "", yes, no);
                 alert.setTitle("Alerta");
                 alert.setHeaderText("Deseja mesmo cancelar a reserva?");
 
                 Optional<ButtonType> result = alert.showAndWait();
-                if(result.isPresent()){
-                    if(result.get() == yes){
-                        libObs.cancelReserve(id);
+                if (result.isPresent()) {
+                    if (result.get() == yes) {
+                        libObs.cancelReserve(i);
                     }
                 }
             });
-            confirm.setOnAction(e -> libObs.confirmReserve(id));
+            confirm.setOnAction(e -> {
+                ButtonType yes = new ButtonType("Sim", ButtonBar.ButtonData.YES);
+                ButtonType no = new ButtonType("Não", ButtonBar.ButtonData.NO);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "", yes, no);
+                alert.setTitle("Alerta");
+                alert.setHeaderText("Deseja mesmo confirmar a reserva?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent()) {
+                    if (result.get() == yes) {
+                        libObs.confirmReserve(i);
+                    }
+                }
+            });
         }
     }
 }

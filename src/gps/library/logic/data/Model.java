@@ -1,8 +1,10 @@
 package gps.library.logic.data;
 
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Model {
@@ -83,6 +85,21 @@ public class Model {
      */
     public void confirmReserve(int id){
 
+        try {
+            // create a mysql database connection
+            String myUrl = "jdbc:sqlite:library.db";
+            Connection conn = DriverManager.getConnection(myUrl);
+            Statement st = conn.createStatement();
+
+            st.executeUpdate( " update reserves set confirm =1 where reserves_id = "+ id + "");
+
+
+
+        }catch (Exception e)
+        {
+            System.err.println("Got an exception!");
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
@@ -92,7 +109,19 @@ public class Model {
      * @param id - the reservation {@code id} on the reserves list
      */
     public void cancelReserve(int id){
+        try {
+            // create a mysql database connection
+            String myUrl = "jdbc:sqlite:library.db";
+            Connection conn = DriverManager.getConnection(myUrl);
+            Statement st = conn.createStatement();
 
+            st.executeUpdate( "Delete from reserves where reserves_id = "+ id + "" );
+
+        }catch (Exception e)
+        {
+            System.err.println("Got an exception!");
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
@@ -145,15 +174,44 @@ public class Model {
     /**
      * Gets the list of reserves for the admin
      * @return a list of reserves from
-     * AQUI NAO SEI SE QUEREM METER DESTE DIA OU O QUE
      */
-    public List<?> getAdminReserves(){
-        List<Timestamp> debug = new ArrayList<>();
-        for(int i = 0; i < 50; i++){
-            Timestamp ts = Timestamp.from(Instant.now());
-            debug.add(ts);
+    public HashMap<Integer, String[]> getAdminReserves(){
+        HashMap<Integer, String[]> reserva = new HashMap<Integer, String[]>();
+
+        int id=0;
+
+        String date, confirm;
+
+        try{
+
+            String myUrl = "jdbc:sqlite:library.db";
+            Connection conn = DriverManager.getConnection(myUrl);
+            Statement st = conn.createStatement();
+
+            ResultSet rs = st.executeQuery("SELECT reserves_id, date, confirm FROM reserves");
+
+            while (rs.next()) {
+                id = rs.getInt("reserves_id");
+                date = rs.getString("date");
+                confirm = rs.getString("confirm");
+
+                String[] aux = new String[2];
+                aux[0]=date;
+                aux[1]=confirm;
+                reserva.put(id, aux);
+
+            }
+            return reserva;
+
+        }catch (Exception e){
+
+            System.err.println("Got an exception!");
+            System.err.println(e.getMessage());
+            return null;
+
         }
-        return debug;
+
+
     }
 
     /**

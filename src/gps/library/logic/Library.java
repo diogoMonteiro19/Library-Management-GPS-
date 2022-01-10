@@ -12,8 +12,8 @@ public class Library {
     public Library(){
         model = new Model();
         state = new InitialState(model);
-        state = new ReservationState(model);
-//        state = new AdminState(model);
+//        state = new ReservationState(model);
+        state = new AdminState(model);
         state.capacity();
     }
 
@@ -74,6 +74,10 @@ public class Library {
     // getters from model
 
     public int getCapacity(){ return model.getCapacity(); }
+
+    public boolean getItworked(){
+        return model.getItworked();
+    }
 
     public List<?> getReserves(){ return model.getReserves(); }
 

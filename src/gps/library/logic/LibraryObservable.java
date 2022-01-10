@@ -96,6 +96,10 @@ public class LibraryObservable {
 
     public int getCapacity(){ return lib.getCapacity(); }
 
+    public boolean getItworked(){
+        return lib.getItworked();
+    }
+
     public List<?> getReserves(){ return lib.getReserves(); }
 
     public List<?> getAdminReserves() { return lib.getAdminReserves(); }
@@ -105,4 +109,5 @@ public class LibraryObservable {
     public int getPenalties(){ return lib.getPenalties(); }
 
     public States getAtualState(){ return lib.getAtualState(); }
+
 }

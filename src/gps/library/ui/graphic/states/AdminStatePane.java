@@ -4,8 +4,11 @@ import gps.library.logic.LibraryObservable;
 import gps.library.logic.States;
 import gps.library.ui.graphic.MyButton;
 import gps.library.ui.graphic.MyLabel;
+import gps.library.ui.graphic.MyProgressBar;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -187,7 +190,14 @@ public class AdminStatePane extends BorderPane {
         updateReservesBox.getChildren().add(updateReservesBtn);
         outGrid.add(updateReservesBox, 1, 4);
 
-        updateCapacityBtn.setOnAction(e -> libObs.updateCapacity((int) slider.getValue()));
+     //   updateCapacityBtn.setOnAction(e -> libObs.updateCapacity((int) slider.getValue()));
+        updateCapacityBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
+                libObs.updateCapacity((int) slider.getValue());
+                lotationupdate();
+            }
+        });
 
         updateReservesBtn.setOnAction(e -> libObs.getAdminReserves());
 
@@ -198,7 +208,33 @@ public class AdminStatePane extends BorderPane {
         libObs.addProperty("UPDATE", e -> update());
     }
 
-    private void update(){
+    private void lotationupdate()
+    {
+        boolean worked = libObs.getItworked();
+
+        if (!worked)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "");
+            alert.setTitle("Alerta");
+            alert.setHeaderText("Erro ao fazer a conexão à base de dados!\nMuito em breve deverá estar resolvido. Se não estiver contacte o administrador do sistema!");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "");
+            alert.setTitle("Confirmação");
+            alert.setHeaderText("Lotação atualizado com sucesso!");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+        }
+
+    }
+
+
+
+        private void update(){
         setVisible(libObs.getAtualState() == States.ADMIN);
         /** TODO VER ESTA CHECKBOX OU SE É PARA POR MESMO UMA CHECKBOX*/
         URL url = getClass().getClassLoader().getResource("gps/library/resources/images/checkbox.png");

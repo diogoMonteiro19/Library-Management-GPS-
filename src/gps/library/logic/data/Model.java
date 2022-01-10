@@ -1,13 +1,13 @@
 package gps.library.logic.data;
 
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
     int capacity = 19;
-
+    boolean itworked = false;
 
     /**
      * @return {@code true} if user is logged, {@code false} if
@@ -64,8 +64,30 @@ public class Model {
      * Queries the capacity from the database
      * and sets {@code capacity} to that value
      */
-    public void queryCapacity(){
+    public void queryCapacity()
+    {
 
+        try{
+        //TODO: meter conn em variavel da classe?
+        String myUrl = "jdbc:sqlite:library.db";
+        Connection conn = DriverManager.getConnection(myUrl);
+        Statement st = conn.createStatement();
+
+        ResultSet rs = st.executeQuery("SELECT capacity FROM capacity");
+        int capacity_queryed=-1;
+        while (rs.next())
+        {
+            capacity_queryed = rs.getInt("capacity");
+            break;
+        }
+
+        capacity = capacity_queryed;
+
+        }catch (Exception e){
+
+            capacity = -1;
+
+        }
     }
 
     /**
@@ -73,7 +95,18 @@ public class Model {
      * @param capacity - percentage of capacity
      */
     public void updateCapacity(int capacity){
+        try{
+            //TODO: meter conn em variavel da classe?
+            String myUrl = "jdbc:sqlite:library.db";
+            Connection conn = DriverManager.getConnection(myUrl);
+            Statement st = conn.createStatement();
 
+            st.executeUpdate("update capacity set capacity = " + capacity);
+            itworked = true;
+        }catch (Exception e){
+            System.err.println("Problema na query à base de dados!!!!\nContacte o administrador do sistema");
+            itworked=false;
+        }
     }
 
     /**
@@ -162,6 +195,9 @@ public class Model {
      */
     public int getCapacity(){
         return capacity;
+    }
+    public boolean getItworked(){
+        return itworked;
     }
 
     /**

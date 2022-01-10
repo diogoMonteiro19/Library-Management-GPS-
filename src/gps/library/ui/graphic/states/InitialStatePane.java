@@ -9,12 +9,12 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.chart.BarChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
+import java.util.Optional;
 
 public class InitialStatePane extends BorderPane {
     private LibraryObservable libObs;
@@ -80,9 +80,24 @@ public class InitialStatePane extends BorderPane {
     }
 
     public void update(){
+        int capacity = libObs.getCapacity();
         progress = new MyProgressBar((double) libObs.getCapacity() / 100);
 
-        center = new VBox(30, welcomeTxt, noteTxt, progress, percent);
+        if (capacity == -1)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "");
+            alert.setTitle("Alerta");
+            alert.setHeaderText("Erro ao fazer a conexão à base de dados!\nMuito em breve deverá estar resolvido. Se não estiver contacte o administrador do sistema!");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            center = new VBox(30, welcomeTxt, noteTxt, progress);
+
+        }
+        else{
+            center = new VBox(30, welcomeTxt, noteTxt, progress, percent);
+
+        }
+
 
         progress.prefWidthProperty().bind(center.widthProperty().subtract(200));
         progress.setPrefHeight(25);

@@ -35,11 +35,7 @@ public class InitialState extends StateAdapter {
 
     @Override
     public States getAtualState() {
-        if(getModel().isLogged()){
-         return States.INITIAL_LOGIN;
-        }
+        // ir ver ao modelo se está logado e retornar consoante isso
         return States.INITIAL_LOGOUT;
-
-
     }
 }

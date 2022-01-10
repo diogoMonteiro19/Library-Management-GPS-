@@ -1,24 +1,32 @@
 package gps.library.logic.data;
 
-import java.sql.*;
+import logIn.LogIn;
+
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+
 
 public class Model {
     int capacity = 19;
-    boolean itworked = false;
+    LogIn novoLogin;
 
+    public Model(){
+        novoLogin = new LogIn();
+    }
     /**
      * @return {@code true} if user is logged, {@code false} if
      * he isn't
      */
-    public boolean isLogged(){
-        return true;
-    }
 
+
+    public boolean isLogged(){
+        return novoLogin.isLogged();
+    }
+    public boolean isAdmin(){
+        return novoLogin.isAdmin();
+    }
     /**
      * Login a user querying the database
      * @param mail - user mail
@@ -26,7 +34,8 @@ public class Model {
      * @return {@code true} if success, {@code false} if failed.
      */
     public boolean login(String mail, String password){
-        return true;
+        novoLogin = new LogIn(mail,password);
+        return novoLogin.verifyLogInExists();
     }
 
     /**
@@ -37,15 +46,19 @@ public class Model {
      * @param confPassword - same password checker
      * @return {@code true} if success, {@code false} if failed.
      */
-    public boolean register(String number, String mail, String password, String confPassword){
-        return true;
+    public boolean register(String number, String mail, String password,String confPassword){
+        if(password.equals(confPassword)){
+            novoLogin = new LogIn(mail,password,Integer.parseInt(number));
+            return novoLogin.createNewUser();
+        }
+        return false;
     }
 
     /**
      * Logout a user...Nothing to do with database
      */
     public void logout(){
-
+        novoLogin.logout();
     }
 
     /**
@@ -66,30 +79,8 @@ public class Model {
      * Queries the capacity from the database
      * and sets {@code capacity} to that value
      */
-    public void queryCapacity()
-    {
+    public void queryCapacity(){
 
-        try{
-        //TODO: meter conn em variavel da classe?
-        String myUrl = "jdbc:sqlite:library.db";
-        Connection conn = DriverManager.getConnection(myUrl);
-        Statement st = conn.createStatement();
-
-        ResultSet rs = st.executeQuery("SELECT capacity FROM capacity");
-        int capacity_queryed=-1;
-        while (rs.next())
-        {
-            capacity_queryed = rs.getInt("capacity");
-            break;
-        }
-
-        capacity = capacity_queryed;
-
-        }catch (Exception e){
-
-            capacity = -1;
-
-        }
     }
 
     /**
@@ -97,18 +88,7 @@ public class Model {
      * @param capacity - percentage of capacity
      */
     public void updateCapacity(int capacity){
-        try{
-            //TODO: meter conn em variavel da classe?
-            String myUrl = "jdbc:sqlite:library.db";
-            Connection conn = DriverManager.getConnection(myUrl);
-            Statement st = conn.createStatement();
 
-            st.executeUpdate("update capacity set capacity = " + capacity);
-            itworked = true;
-        }catch (Exception e){
-            System.err.println("Problema na query à base de dados!!!!\nContacte o administrador do sistema");
-            itworked=false;
-        }
     }
 
     /**
@@ -118,21 +98,6 @@ public class Model {
      */
     public void confirmReserve(int id){
 
-        try {
-            // create a mysql database connection
-            String myUrl = "jdbc:sqlite:library.db";
-            Connection conn = DriverManager.getConnection(myUrl);
-            Statement st = conn.createStatement();
-
-            st.executeUpdate( " update reserves set confirm =1 where reserves_id = "+ id + "");
-
-
-
-        }catch (Exception e)
-        {
-            System.err.println("Got an exception!");
-            System.err.println(e.getMessage());
-        }
     }
 
     /**
@@ -142,19 +107,7 @@ public class Model {
      * @param id - the reservation {@code id} on the reserves list
      */
     public void cancelReserve(int id){
-        try {
-            // create a mysql database connection
-            String myUrl = "jdbc:sqlite:library.db";
-            Connection conn = DriverManager.getConnection(myUrl);
-            Statement st = conn.createStatement();
 
-            st.executeUpdate( "Delete from reserves where reserves_id = "+ id + "" );
-
-        }catch (Exception e)
-        {
-            System.err.println("Got an exception!");
-            System.err.println(e.getMessage());
-        }
     }
 
     /**
@@ -207,44 +160,15 @@ public class Model {
     /**
      * Gets the list of reserves for the admin
      * @return a list of reserves from
+     * AQUI NAO SEI SE QUEREM METER DESTE DIA OU O QUE
      */
-    public HashMap<Integer, String[]> getAdminReserves(){
-        HashMap<Integer, String[]> reserva = new HashMap<Integer, String[]>();
-
-        int id=0;
-
-        String date, confirm;
-
-        try{
-
-            String myUrl = "jdbc:sqlite:library.db";
-            Connection conn = DriverManager.getConnection(myUrl);
-            Statement st = conn.createStatement();
-
-            ResultSet rs = st.executeQuery("SELECT reserves_id, date, confirm FROM reserves");
-
-            while (rs.next()) {
-                id = rs.getInt("reserves_id");
-                date = rs.getString("date");
-                confirm = rs.getString("confirm");
-
-                String[] aux = new String[2];
-                aux[0]=date;
-                aux[1]=confirm;
-                reserva.put(id, aux);
-
-            }
-            return reserva;
-
-        }catch (Exception e){
-
-            System.err.println("Got an exception!");
-            System.err.println(e.getMessage());
-            return null;
-
+    public List<?> getAdminReserves(){
+        List<Timestamp> debug = new ArrayList<>();
+        for(int i = 0; i < 50; i++){
+            Timestamp ts = Timestamp.from(Instant.now());
+            debug.add(ts);
         }
-
-
+        return debug;
     }
 
     /**
@@ -253,9 +177,6 @@ public class Model {
      */
     public int getCapacity(){
         return capacity;
-    }
-    public boolean getItworked(){
-        return itworked;
     }
 
     /**

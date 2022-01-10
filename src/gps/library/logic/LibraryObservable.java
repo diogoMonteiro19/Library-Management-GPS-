@@ -2,6 +2,10 @@ package gps.library.logic;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class LibraryObservable {
@@ -102,7 +106,7 @@ public class LibraryObservable {
 
     public List<?> getReserves(){ return lib.getReserves(); }
 
-    public List<?> getAdminReserves() { return lib.getAdminReserves(); }
+    public HashMap<Integer, String[]> getAdminReserves() { return lib.getAdminReserves(); }
 
     public List<?> getHours(){ return lib.getHours(); }
 

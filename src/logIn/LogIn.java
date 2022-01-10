@@ -7,6 +7,7 @@ public class LogIn {
     private int students_id;
     private boolean logged = false;
     private boolean isAdmin = false;
+    private boolean istoTaTudoFOdido = true;
 
     public LogIn (){}
 

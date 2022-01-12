@@ -8,11 +8,13 @@ import gps.library.ui.graphic.MyPasswordField;
 import gps.library.ui.graphic.MyTextField;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -85,7 +87,6 @@ public class LoginStatePane extends BorderPane {
                         registerBtn.setDisable(false);
                     }
                     if(numberFld.getText().length() < 10){
-                        System.out.println("HERE");
                         numberFldError.setVisible(true);
                         registerBtn.setDisable(true);
                     }
@@ -93,9 +94,17 @@ public class LoginStatePane extends BorderPane {
             }
         });
 
-//        numberFld.setOnKeyPressed(e -> {
-//            case KEY_EVENT
-//        });
+        numberFld.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                switch (event.getCode()) {
+                    case BACK_SPACE -> {
+                        numberFldError.setVisible(true);
+                        registerBtn.setDisable(true);
+                    }
+                }
+            }
+        });
         mailRegisterLbl = new MyLabel("Email:", minor);
         mailRegisterFld = new MyTextField(minor);
         passwordRegisterLbl = new MyLabel("Password:", minor);

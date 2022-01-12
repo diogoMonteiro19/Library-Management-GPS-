@@ -233,7 +233,7 @@ public class ReservationStatePane extends BorderPane {
 
         remove.setOnAction(e -> {
             allStudents.getChildren().removeAll(mid, error);
-            nStudents.getAndIncrement();
+            nStudents.getAndDecrement();
         });
 
         student.setTextFormatter(new TextFormatter<>(change ->
@@ -248,10 +248,8 @@ public class ReservationStatePane extends BorderPane {
                     if (student.getText().length() >= 10) {
                         student.setText(student.getText().substring(0, 10));
                         error.setVisible(false);
-//                        registerBtn.setDisable(false);
                     }
                     if(student.getText().length() < 10){
-//                        registerBtn.setDisable(true);
                     }
                 }
             }
@@ -296,10 +294,8 @@ public class ReservationStatePane extends BorderPane {
                             if (newStudent.getText().length() >= 10) {
                                 newStudent.setText(newStudent.getText().substring(0, 10));
                                 error.setVisible(false);
-//                        registerBtn.setDisable(false);
                             }
                             if(newStudent.getText().length() < 10){
-//                        registerBtn.setDisable(true);
                             }
                         }
                     }

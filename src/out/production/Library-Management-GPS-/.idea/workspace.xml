@@ -12,25 +12,7 @@
     <list default="true" id="4b4a91b2-fb2d-4132-9c6f-f672addccaf4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../out/production/Library-Management-GPS-/Library-Management-GPS-.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/Library-Management-GPS-/Library-Management-GPS-.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../out/production/Library-Management-GPS-/out/production/Library-Management-GPS-/Library-Management-GPS-.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../out/production/Library-Management-GPS-/out/production/Library-Management-GPS-/Library-Management-GPS-.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gps/library/logic/Library.java" beforeDir="false" afterPath="$PROJECT_DIR$/gps/library/logic/Library.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gps/library/logic/connection/DBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/gps/library/logic/connection/DBManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gps/library/logic/data/Model.java" beforeDir="false" afterPath="$PROJECT_DIR$/gps/library/logic/data/Model.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gps/library/ui/graphic/states/AdminStatePane.java" beforeDir="false" afterPath="$PROJECT_DIR$/gps/library/ui/graphic/states/AdminStatePane.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gps/library/ui/graphic/states/LoginStatePane.java" beforeDir="false" afterPath="$PROJECT_DIR$/gps/library/ui/graphic/states/LoginStatePane.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gps/library/ui/graphic/states/ReservationStatePane.java" beforeDir="false" afterPath="$PROJECT_DIR$/gps/library/ui/graphic/states/ReservationStatePane.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gps/library/ui/graphic/states/UserStatePane.java" beforeDir="false" afterPath="$PROJECT_DIR$/gps/library/ui/graphic/states/UserStatePane.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/library.db" beforeDir="false" afterPath="$PROJECT_DIR$/library.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/logic/Library.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/logic/Library.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/logic/connection/DBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/logic/connection/DBManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/logic/data/Model.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/logic/data/Model.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/AdminStatePane.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/AdminStatePane.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/LoginStatePane.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/LoginStatePane.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/ReservationStatePane$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/ReservationStatePane$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/ReservationStatePane$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/ReservationStatePane$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/ReservationStatePane.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/ReservationStatePane.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/UserStatePane.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Library-Management-GPS-/gps/library/ui/graphic/states/UserStatePane.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Library-Management-GPS-/library.db" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Library-Management-GPS-/library.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +86,7 @@
       <updated>1641766758842</updated>
       <workItem from="1641910733808" duration="5787000" />
       <workItem from="1641942448882" duration="13363000" />
-      <workItem from="1641998384125" duration="13805000" />
+      <workItem from="1641998384125" duration="19161000" />
     </task>
     <servers />
   </component>
@@ -122,26 +104,5 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/gps/library/logic/connection/DBManager.java</url>
-          <line>341</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/gps/library/ui/graphic/states/UserStatePane.java</url>
-          <line>192</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/gps/library/logic/connection/DBManager.java</url>
-          <line>360</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

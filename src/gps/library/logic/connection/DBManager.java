@@ -251,7 +251,7 @@ public class DBManager {
 
                     java.util.Date data = new java.util.Date();
                     data.setTime(date.getTime());
-                    String formattedDate = new SimpleDateFormat("dd-MM-yyyy hh:mm").format(data);
+                    String formattedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(data);
 
                     String[] aux = new String[3];
                     aux[0] = formattedDate;
@@ -296,16 +296,26 @@ public class DBManager {
                 id = rs.getInt("reserves_id");
                 date = rs.getTimestamp("date");
                 confirm = rs.getString("confirm");
-
                 java.util.Date data = new java.util.Date();
                 data.setTime(date.getTime());
-                String formattedDate = new SimpleDateFormat("dd-MM-yyyy hh:mm").format(data);
+                String formattedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(data);
 
-                String[] aux = new String[2];
+                String[] aux = new String[3];
                 aux[0] = formattedDate;
                 aux[1] = confirm;
+                System.out.println(id);
+                Statement stmt2 = conn.createStatement();
+                ResultSet rs2 = stmt2.executeQuery("select users.students_id, reserver from users_has_reserves\n" +
+                        "join users on user_id = users_user_id\n" +
+                        "where reservers_reserves_id = " + id);
+                StringBuilder sb = new StringBuilder();
+                while(rs2.next()){
+                    sb.append(String.valueOf(rs2.getInt("students_id") + " "));
+                }
+                stmt2.close();
+                aux[2] = sb.toString();
+                rs2.close();
                 reserva.put(id, aux);
-
             }
             rs.close();
             return reserva;

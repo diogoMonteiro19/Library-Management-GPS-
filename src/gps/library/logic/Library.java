@@ -13,7 +13,7 @@ public class Library {
     public Library(){
         model = new Model();
         state = new InitialState(model);
-        state = new ReservationState(model);
+//        state = new ReservationState(model);
 //       state = new AdminState(model);
         state.capacity();
     }

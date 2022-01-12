@@ -142,27 +142,35 @@ public class UserStatePane extends BorderPane {
         int id = 0;
         HashMap<Integer, String[]> reserves = libObs.getReserves();
         for(Integer i : reserves.keySet()) {
+            System.out.println("ID:" + i);
             StackPane fillLeft = new StackPane();
             StackPane fillMid = new StackPane();
             StackPane fillRight = new StackPane();
+
             MyLabel office = new MyLabel(reserves.get(i)[2], minor);
+
             MyButton cancel = new MyButton("X");
             cancel.setBackground(null);
             MyLabel reserve = new MyLabel(reserves.get(i)[0], minor);
-//            reserves.get(i)[2];
+
+
             fillLeft.getChildren().add(reserve);
             fillMid.getChildren().add(office);
             fillRight.getChildren().add(cancel);
+
             System.out.println(id);
             if(id % 2 == 0) {
                 fillLeft.setBackground(btnBkg);
+                fillMid.setBackground(btnBkg);
                 fillRight.setBackground(btnBkg);
             }
-            gridPane.add(fillLeft, 0, i+1);
-            gridPane.add(fillMid, 1, i+1);
-            gridPane.add(fillRight, 2, i+1);
+
+            gridPane.add(fillLeft, 0, id+1);
+            gridPane.add(fillMid, 1, id+1);
+            gridPane.add(fillRight, 2, id+1);
             GridPane.setFillWidth(fillLeft, true);
             GridPane.setFillHeight(fillLeft, true);
+
             cancel.setOnAction(e -> {
                 ButtonType yes = new ButtonType("Sim",  ButtonBar.ButtonData.YES);
                 ButtonType no = new ButtonType("Não", ButtonBar.ButtonData.NO);

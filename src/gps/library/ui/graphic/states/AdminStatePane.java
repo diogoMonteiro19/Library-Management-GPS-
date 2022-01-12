@@ -207,12 +207,30 @@ public class AdminStatePane extends BorderPane {
             }
         });
 
-      //  updateReservesBtn.setOnAction(e -> libObs.getAdminReserves());
+        updateReservesBtn.setOnAction(e -> {
+            libObs.getAdminReserves();
+            update();
+        });
 
         logout.setOnAction(e -> libObs.logout());
 
         setCenter(outGrid);
     }
+
+    private ContextMenu createContextMenu(Label label, String[] reserve) {
+        ContextMenu menu = new ContextMenu();
+        MenuItem details = new MenuItem("Details");
+        menu.getItems().addAll(details);
+        details.setOnAction(e -> {
+            Alert msgBox = new Alert(Alert.AlertType.INFORMATION);
+            msgBox.setTitle(reserve[0]);
+            msgBox.setHeaderText("Reserva efetuada para o dia: " + reserve[0] + "\n" +
+                    "Estudantes: " + reserve[2]);
+            msgBox.showAndWait();
+        });
+        return menu;
+    }
+
 
     private void registerObserver(){
         libObs.addProperty("UPDATE", e -> update());
@@ -239,12 +257,12 @@ public class AdminStatePane extends BorderPane {
             Optional<ButtonType> result = alert.showAndWait();
 
         }
-
     }
 
 
     private void update(){
         setVisible(libObs.getAtualState() == States.ADMIN);
+        gridPane.getChildren().clear();
         /** TODO VER ESTA CHECKBOX OU SE É PARA POR MESMO UMA CHECKBOX*/
         URL url = getClass().getClassLoader().getResource("gps/library/resources/images/checkbox.png");
         Image icon = new Image(String.valueOf(url));
@@ -264,10 +282,13 @@ public class AdminStatePane extends BorderPane {
             StackPane fillRight = new StackPane();
             MyButton cancel = new MyButton("X");
             MyButton confirm = new MyButton();
+
             cancel.setBackground(null);
             confirm.setBackground(null);
             confirm.setGraphic(view);
+
             MyLabel reserve = new MyLabel(reserves.get(i)[0], minor);
+            reserve.setContextMenu(createContextMenu(reserve, reserves.get(i)));
 
             fillLeft.getChildren().add(reserve);
             fillMid.getChildren().add(cancel);
@@ -279,17 +300,18 @@ public class AdminStatePane extends BorderPane {
             }
 
             fillRight.getChildren().add(confirm);
-            if (id == 0) {
+            if (id % 2 == 0) {
                 fillLeft.setBackground(btnBkg);
                 fillMid.setBackground(btnBkg);
                 fillRight.setBackground(btnBkg);
-                id = 1;
             }
-            gridPane.add(fillLeft, 0, i + 1);
-            gridPane.add(fillMid, 1, i + 1);
-            gridPane.add(fillRight, 2, i + 1);
+
+            gridPane.add(fillLeft, 0, id + 1);
+            gridPane.add(fillMid, 1, id + 1);
+            gridPane.add(fillRight, 2, id + 1);
             GridPane.setFillWidth(fillLeft, true);
             GridPane.setFillHeight(fillLeft, true);
+
             cancel.setOnAction(e -> {
                 ButtonType yes = new ButtonType("Sim", ButtonBar.ButtonData.YES);
                 ButtonType no = new ButtonType("Não", ButtonBar.ButtonData.NO);
@@ -318,6 +340,7 @@ public class AdminStatePane extends BorderPane {
                     }
                 }
             });
+            id++;
         }
     }
 

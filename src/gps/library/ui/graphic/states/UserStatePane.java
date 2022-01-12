@@ -35,6 +35,7 @@ public class UserStatePane extends BorderPane {
     MyButton capacity;
     MyButton reserveOffice;
     MyLabel date;
+    MyLabel office;
     MyLabel cancel;
 
     ScrollPane scrollPane;
@@ -59,6 +60,7 @@ public class UserStatePane extends BorderPane {
         reserveOffice = new MyButton("Reservar Gabinete");
 
         date = new MyLabel("Data", minor);
+        office = new MyLabel("Gabinete", minor);
         cancel = new MyLabel("Cancelar Reserva", minor);
 
         ColumnConstraints column1 = new ColumnConstraints();
@@ -74,15 +76,27 @@ public class UserStatePane extends BorderPane {
         topGrid.add(titleTxt, 0, 2);
         topGrid.setPadding(new Insets(25, 25, 25, 25));
 
+
+        ColumnConstraints column3 = new ColumnConstraints();
+        column3.setHalignment(HPos.CENTER);
+        ColumnConstraints column4 = new ColumnConstraints();
+        column4.setHalignment(HPos.CENTER);
+        ColumnConstraints column5 = new ColumnConstraints();
+        column5.setHalignment(HPos.CENTER);
+        column3.setPercentWidth(50);
+        column4.setPercentWidth(25);
+        column5.setPercentWidth(25);
+
         topTable = new GridPane();
-        topTable.getColumnConstraints().addAll(column1, column2);
+        topTable.getColumnConstraints().addAll(column3, column4, column5);
         topTable.add(date, 0, 0);
-        topTable.add(cancel, 1, 0);
+        topTable.add(office, 1, 0);
+        topTable.add(cancel, 2, 0);
 
         VBox top = new VBox(10, topGrid, topTable);
 
         gridPane = new GridPane();
-        gridPane.getColumnConstraints().addAll(column1, column2);
+        gridPane.getColumnConstraints().addAll(column3, column4, column5);
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setHgap(10);
         gridPane.setVgap(10);
@@ -131,11 +145,13 @@ public class UserStatePane extends BorderPane {
             StackPane fillLeft = new StackPane();
             StackPane fillMid = new StackPane();
             StackPane fillRight = new StackPane();
+            MyLabel office = new MyLabel(reserves.get(i)[2], minor);
             MyButton cancel = new MyButton("X");
             cancel.setBackground(null);
             MyLabel reserve = new MyLabel(reserves.get(i)[0], minor);
 //            reserves.get(i)[2];
             fillLeft.getChildren().add(reserve);
+            fillMid.getChildren().add(office);
             fillRight.getChildren().add(cancel);
             System.out.println(id);
             if(id % 2 == 0) {
@@ -143,7 +159,8 @@ public class UserStatePane extends BorderPane {
                 fillRight.setBackground(btnBkg);
             }
             gridPane.add(fillLeft, 0, i+1);
-            gridPane.add(fillRight, 1, i+1);
+            gridPane.add(fillMid, 1, i+1);
+            gridPane.add(fillRight, 2, i+1);
             GridPane.setFillWidth(fillLeft, true);
             GridPane.setFillHeight(fillLeft, true);
             cancel.setOnAction(e -> {

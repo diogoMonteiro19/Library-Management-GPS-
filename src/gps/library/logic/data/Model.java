@@ -94,6 +94,7 @@ public class Model {
      * @param id - the reservation {@code id} on the reserves list
      */
     public void cancelReserve(int id){
+        dbManager.setPenalty(id);
         dbManager.cancelReserve(id);
     }
 

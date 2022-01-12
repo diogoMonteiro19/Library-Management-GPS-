@@ -4,6 +4,7 @@ import gps.library.logic.LibraryObservable;
 import gps.library.logic.States;
 import gps.library.ui.graphic.MyButton;
 import gps.library.ui.graphic.MyLabel;
+import gps.library.ui.graphic.MyTextField;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
@@ -54,6 +55,7 @@ public class ReservationStatePane extends BorderPane {
     MyButton remove;
     MyButton cancelMembers;
     MyButton nextMembers;
+    MyLabel error;
     VBox contentMembers;
 
     public ReservationStatePane(LibraryObservable libObs){
@@ -163,6 +165,7 @@ public class ReservationStatePane extends BorderPane {
                     if(isSelected){
                         selected[0] = rb.getText();
                         office_id[0] = available.get(finalI-9);
+                        nextHours.setDisable(false);
                     }
 //                    for(int i = 0; i < selected[0].size(); i++){
 //                        System.out.println(selected[0].get(i));
@@ -181,6 +184,7 @@ public class ReservationStatePane extends BorderPane {
         HBox bot = new HBox(25);
         cancelHours = new MyButton("Cancelar");
         nextHours = new MyButton("Seguinte");
+        nextHours.setDisable(true);
         bot.setAlignment(Pos.CENTER);
         bot.getChildren().addAll(cancelHours, nextHours);
 
@@ -209,13 +213,15 @@ public class ReservationStatePane extends BorderPane {
         /* TOP */
         HBox top = new HBox(10);
         description = new MyLabel("Associar pessoa pelo numero de aluno: ", minor);
+        error = new MyLabel("Número de estudante inválido.", new Font(10));
+        error.setTextFill(Color.RED);
         add = new MyButton("+");
         top.setAlignment(Pos.CENTER);
         top.getChildren().addAll(description, add);
 
         /* TEXTS */
         HBox mid = new HBox(10);
-        TextField student = new TextField();
+        MyTextField student = new MyTextField(minor);
         students.add(student);
         remove = new MyButton("X");
         mid.setAlignment(Pos.CENTER);
@@ -223,11 +229,32 @@ public class ReservationStatePane extends BorderPane {
 
         VBox allStudents = new VBox(10);
         allStudents.setAlignment(Pos.CENTER);
-        allStudents.getChildren().addAll(mid);
+        allStudents.getChildren().addAll(mid, error);
 
         remove.setOnAction(e -> {
-            allStudents.getChildren().remove(mid);
+            allStudents.getChildren().removeAll(mid, error);
             nStudents.getAndIncrement();
+        });
+
+        student.setTextFormatter(new TextFormatter<>(change ->
+                (change.getControlNewText().matches("([1-9][0-9]*)?")) ? change : null));
+
+        student.lengthProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> observable,
+                                Number oldValue, Number newValue) {
+                if (newValue.intValue() > oldValue.intValue()) {
+                    if (student.getText().length() >= 10) {
+                        student.setText(student.getText().substring(0, 10));
+                        error.setVisible(false);
+//                        registerBtn.setDisable(false);
+                    }
+                    if(student.getText().length() < 10){
+//                        registerBtn.setDisable(true);
+                    }
+                }
+            }
         });
 
         /* BUTTONS */
@@ -246,17 +273,36 @@ public class ReservationStatePane extends BorderPane {
         add.setOnAction(e -> {
             if(nStudents.get() < 2){
                 HBox newMid = new HBox(10);
-                TextField newStudent = new TextField();
+                MyTextField newStudent = new MyTextField(minor);
                 students.add(newStudent);
                 remove = new MyButton("X");
                 newMid.setAlignment(Pos.CENTER);
+                MyLabel error = new MyLabel("Número de estudante inválido.", new Font(10));
+                error.setTextFill(Color.RED);
                 newMid.getChildren().addAll(newStudent, remove);
-                allStudents.getChildren().add(newMid);
+                allStudents.getChildren().addAll(newMid, error);
                 nStudents.getAndIncrement();
                 remove.setOnAction(event -> {
                     newMid.setVisible(false);
-                    allStudents.getChildren().remove(newMid);
+                    allStudents.getChildren().removeAll(newMid, error);
                     nStudents.getAndDecrement();
+                });
+                newStudent.lengthProperty().addListener(new ChangeListener<Number>() {
+
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observable,
+                                        Number oldValue, Number newValue) {
+                        if (newValue.intValue() > oldValue.intValue()) {
+                            if (newStudent.getText().length() >= 10) {
+                                newStudent.setText(newStudent.getText().substring(0, 10));
+                                error.setVisible(false);
+//                        registerBtn.setDisable(false);
+                            }
+                            if(newStudent.getText().length() < 10){
+//                        registerBtn.setDisable(true);
+                            }
+                        }
+                    }
                 });
             }else{
                 Popup popup = new Popup();

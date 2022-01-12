@@ -219,13 +219,13 @@ public class AdminStatePane extends BorderPane {
 
     private ContextMenu createContextMenu(Label label, String[] reserve) {
         ContextMenu menu = new ContextMenu();
-        MenuItem details = new MenuItem("Details");
+        MenuItem details = new MenuItem("Detalhes");
         menu.getItems().addAll(details);
         details.setOnAction(e -> {
             Alert msgBox = new Alert(Alert.AlertType.INFORMATION);
             msgBox.setTitle(reserve[0]);
-            msgBox.setHeaderText("Reserva efetuada para o dia: " + reserve[0] + "\n" +
-                    "Estudantes: " + reserve[2]);
+            msgBox.setHeaderText("Reserva efetuada para o dia: " + reserve[0] + "\nGabinete: " + reserve[3] +
+                    "\nEstudantes: " + reserve[2]);
             msgBox.showAndWait();
         });
         return menu;

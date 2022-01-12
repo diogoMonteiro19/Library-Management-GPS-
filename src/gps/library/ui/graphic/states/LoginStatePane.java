@@ -6,10 +6,13 @@ import gps.library.ui.graphic.MyButton;
 import gps.library.ui.graphic.MyLabel;
 import gps.library.ui.graphic.MyPasswordField;
 import gps.library.ui.graphic.MyTextField;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -35,6 +38,7 @@ public class LoginStatePane extends BorderPane {
     MyLabel registerLbl;
     MyLabel numberLbl;
     MyTextField numberFld;
+    MyLabel numberFldError;
     MyLabel mailRegisterLbl;
     MyTextField mailRegisterFld;
     MyLabel passwordRegisterLbl;
@@ -64,6 +68,34 @@ public class LoginStatePane extends BorderPane {
 
         numberLbl = new MyLabel("Numero de aluno:", minor);
         numberFld = new MyTextField(minor);
+        numberFldError = new MyLabel("Número de estudante inválido.", new Font(10));
+        numberFldError.setTextFill(Color.RED);
+        numberFld.setTextFormatter(new TextFormatter<>(change ->
+                (change.getControlNewText().matches("([1-9][0-9]*)?")) ? change : null));
+
+        numberFld.lengthProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> observable,
+                                Number oldValue, Number newValue) {
+                if (newValue.intValue() > oldValue.intValue()) {
+                    if (numberFld.getText().length() >= 10) {
+                        numberFld.setText(numberFld.getText().substring(0, 10));
+                        numberFldError.setVisible(false);
+                        registerBtn.setDisable(false);
+                    }
+                    if(numberFld.getText().length() < 10){
+                        System.out.println("HERE");
+                        numberFldError.setVisible(true);
+                        registerBtn.setDisable(true);
+                    }
+                }
+            }
+        });
+
+//        numberFld.setOnKeyPressed(e -> {
+//            case KEY_EVENT
+//        });
         mailRegisterLbl = new MyLabel("Email:", minor);
         mailRegisterFld = new MyTextField(minor);
         passwordRegisterLbl = new MyLabel("Password:", minor);
@@ -73,6 +105,7 @@ public class LoginStatePane extends BorderPane {
 
         loginBtn = new MyButton("Login");
         registerBtn = new MyButton("Register");
+        registerBtn.setDisable(true);
 
         back = new MyButton("Voltar");
 
@@ -126,7 +159,8 @@ public class LoginStatePane extends BorderPane {
         right.add(confPasswordRegisterLbl, 0, 4);
         right.add(confPasswordRegisterFld, 1, 4);
 
-        right.add(registerBtn, 1, 5);
+        right.add(numberFldError, 1, 5);
+        right.add(registerBtn, 1, 6);
 
         out.add(left, 0, 0);
         out.add(right, 1, 0);

@@ -142,7 +142,6 @@ public class UserStatePane extends BorderPane {
         int id = 0;
         HashMap<Integer, String[]> reserves = libObs.getReserves();
         for(Integer i : reserves.keySet()) {
-            System.out.println("ID:" + i);
             StackPane fillLeft = new StackPane();
             StackPane fillMid = new StackPane();
             StackPane fillRight = new StackPane();

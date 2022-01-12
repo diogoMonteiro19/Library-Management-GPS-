@@ -6,6 +6,7 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,13 @@ public class DBManager {
         }catch (SQLException e) {
             e.printStackTrace();
         }
+        try {
+            stmt = conn.createStatement();
+            stmt.executeUpdate("pragma foreign_keys = on");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         reserva = new HashMap<>();
         students = new ArrayList<>();
     }
@@ -213,6 +221,7 @@ public class DBManager {
             stmt = conn.createStatement();
 
             stmt.executeUpdate( "Delete from reserves where reserves_id = "+ id + "" );
+//            stmt.executeUpdate("Delete from users_has_reserves where reservers_reserves_id = " + id);
         }catch (Exception e)
         {
             System.err.println("Got an exception!");
@@ -230,7 +239,7 @@ public class DBManager {
 
         int  iduser=0, idreserve=0;
         Timestamp date;
-        String /*date,*/ confirm, id_office;
+        String confirm, id_office;
 
         HashMap<Integer, String[]> reserva = new HashMap<Integer, String[]>();
 
@@ -285,13 +294,13 @@ public class DBManager {
 
         HashMap<Integer, String[]> reserva = new HashMap<Integer, String[]>();
         Timestamp date;
-        String /*date,*/ confirm;
+        String confirm;
 
         try {
             stmt = conn.createStatement();
 
-            ResultSet rs = stmt.executeQuery("SELECT reserves_id, date, confirm FROM reserves");
-//            stmt.close();
+            ResultSet rs = stmt.executeQuery("SELECT reserves_id, date, office_id, confirm FROM reserves");
+
             while (rs.next()) {
                 id = rs.getInt("reserves_id");
                 date = rs.getTimestamp("date");
@@ -300,9 +309,10 @@ public class DBManager {
                 data.setTime(date.getTime());
                 String formattedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(data);
 
-                String[] aux = new String[3];
+                String[] aux = new String[4];
                 aux[0] = formattedDate;
                 aux[1] = confirm;
+                aux[3] = String.valueOf(rs.getInt("office_id"));
                 System.out.println(id);
                 Statement stmt2 = conn.createStatement();
                 ResultSet rs2 = stmt2.executeQuery("select users.students_id, reserver from users_has_reserves\n" +
@@ -317,6 +327,7 @@ public class DBManager {
                 rs2.close();
                 reserva.put(id, aux);
             }
+
             rs.close();
             return reserva;
 
@@ -354,12 +365,10 @@ public class DBManager {
             }
 
             LocalDateTime now = LocalDateTime.now();
-            long time[] = getTime(now, penalties_queryed.toLocalDateTime());
-            System.out.println(time[0]);
-            System.out.println(time);
-            if(time[0] > 0)
+            long hours = ChronoUnit.HOURS.between(now, penalties_queryed.toLocalDateTime());
+            if(hours > 0)
             {
-                return (int) time[0];//(int) penalties_queryed;
+                return (int)hours;//(int) penalties_queryed;
             }
 
         }catch (Exception e){
@@ -373,6 +382,50 @@ public class DBManager {
 
         return 0;
 
+    }
+
+    public void setPenalty(int id){
+        try{
+            stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("select distinct users.user_id, penalties from users_has_reserves\n" +
+                    "join users on user_id = users_user_id\n" +
+                    "where reservers_reserves_id = " + id + "\n" +
+                    "and reserver = 1");
+            Timestamp penalties_queryed = null;
+            int user_id = 0;
+            while (rs.next())
+            {
+                user_id = rs.getInt("user_id");
+                penalties_queryed = rs.getTimestamp("penalties");
+                break;
+            }
+            stmt = conn.createStatement();
+
+            if(penalties_queryed == null || LocalDateTime.now().compareTo(penalties_queryed.toLocalDateTime()) > 0){
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss" );
+                String ts = sdf.format(Timestamp.valueOf(LocalDateTime.now().plusHours(24)));
+                stmt.executeUpdate("UPDATE users set penalties = '" + ts + "' WHERE user_id = " + user_id);
+            }
+            else{
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String ts = sdf.format(Timestamp.valueOf(penalties_queryed.toLocalDateTime().plusHours(24)));
+                stmt.executeUpdate("UPDATE users set penalties = '" + ts + "' WHERE user_id = " + user_id);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally{
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static Period getPeriod(LocalDateTime dob, LocalDateTime now) {
+        return Period.between(dob.toLocalDate(), now.toLocalDate());
     }
 
     private static long[] getTime(LocalDateTime dob, LocalDateTime now) {
@@ -393,12 +446,16 @@ public class DBManager {
         List<Integer> horas = new ArrayList<>(14);
 
         LocalDateTime t1 = LocalDateTime.now();
+        int actualDay = t1.getDayOfMonth();
+
         int actualHour = t1.getHour();
         for(int i = 0; i<14; i++){
             horas.add(0);
         }
-        for(int i = actualHour; i>= 9; i--){
-            horas.set(i-9, 5);
+        if(actualDay == day.toLocalDateTime().getDayOfMonth()) {
+            for (int i = actualHour; i >= 9; i--) {
+                horas.set(i - 9, 5);
+            }
         }
         try{
             stmt = conn.createStatement();
@@ -415,6 +472,18 @@ public class DBManager {
                 int hour = time.toLocalDateTime().getHour();
                 if(horas.get(hour-9) == 0) {
                     horas.set(hour - 9, rs.getInt("number"));
+                }
+            }
+
+            stmt = conn.createStatement();
+            ResultSet rs2 = stmt.executeQuery("select date from reserves r\n" +
+                    "join users_has_reserves ur on r.reserves_id = ur.reservers_reserves_id\n" +
+                    "where ur.users_user_id = " + id);
+            while(rs2.next()){
+                Timestamp time = rs2.getTimestamp("date");
+                if(time.toLocalDateTime().getDayOfMonth() == day.toLocalDateTime().getDayOfMonth()) {
+                    int hour = time.toLocalDateTime().getHour();
+                    horas.set(hour - 9, 5);
                 }
             }
 

@@ -4,13 +4,17 @@ import gps.library.logic.LibraryObservable;
 import gps.library.logic.States;
 import gps.library.ui.graphic.MyButton;
 import gps.library.ui.graphic.MyLabel;
+import gps.library.ui.graphic.MyPasswordField;
 import gps.library.ui.graphic.MyTextField;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
+import java.util.Optional;
 
 public class LoginStatePane extends BorderPane {
     private LibraryObservable libObs;
@@ -27,16 +31,16 @@ public class LoginStatePane extends BorderPane {
     MyLabel mailLbl;
     MyTextField mailFld;
     MyLabel passwordLbl;
-    MyTextField passwordFld;
+    MyPasswordField passwordFld;
     MyLabel registerLbl;
     MyLabel numberLbl;
     MyTextField numberFld;
     MyLabel mailRegisterLbl;
     MyTextField mailRegisterFld;
     MyLabel passwordRegisterLbl;
-    MyTextField passwordRegisterFld;
+    MyPasswordField passwordRegisterFld;
     MyLabel confPasswordRegisterLbl;
-    MyTextField confPasswordRegisterFld;
+    MyPasswordField confPasswordRegisterFld;
     MyButton loginBtn;
     MyButton registerBtn;
     MyButton back;
@@ -54,7 +58,7 @@ public class LoginStatePane extends BorderPane {
         mailLbl = new MyLabel("Email: ", minor);
         mailFld = new MyTextField(minor);
         passwordLbl = new MyLabel("Password:", minor);
-        passwordFld = new MyTextField(minor);
+        passwordFld = new MyPasswordField(minor);
 
         registerLbl = new MyLabel("Register", title);
 
@@ -63,9 +67,9 @@ public class LoginStatePane extends BorderPane {
         mailRegisterLbl = new MyLabel("Email:", minor);
         mailRegisterFld = new MyTextField(minor);
         passwordRegisterLbl = new MyLabel("Password:", minor);
-        passwordRegisterFld = new MyTextField(minor);
+        passwordRegisterFld = new MyPasswordField(minor);
         confPasswordRegisterLbl = new MyLabel("Confirmação Password:", minor);
-        confPasswordRegisterFld = new MyTextField(minor);
+        confPasswordRegisterFld = new MyPasswordField(minor);
 
         loginBtn = new MyButton("Login");
         registerBtn = new MyButton("Register");
@@ -132,10 +136,12 @@ public class LoginStatePane extends BorderPane {
         // register buttons
         loginBtn.setOnAction(e -> {
             libObs.login(mailFld.getText(), passwordFld.getText());
+            confirmUpdate();
         });
 
         registerBtn.setOnAction(e -> {
             libObs.register(numberFld.getText(), mailRegisterFld.getText(), passwordRegisterFld.getText(), confPasswordRegisterFld.getText());
+            confirmUpdate();
         });
 
         back.setOnAction(e -> libObs.capacity());
@@ -143,6 +149,19 @@ public class LoginStatePane extends BorderPane {
 
     private void registerObserver(){
         libObs.addProperty("UPDATE", e -> update());
+    }
+
+    private void confirmUpdate(){
+        boolean worked = libObs.getItworked();
+
+        if (!worked){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "");
+            alert.setTitle("Alerta");
+            alert.setHeaderText("Erro - Confirme novamente os campos e tente novamente.");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+        }
     }
 
     private void update(){

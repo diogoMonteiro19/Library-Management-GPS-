@@ -4,8 +4,6 @@ import gps.library.logic.States;
 import gps.library.logic.data.Model;
 
 public class InitialState extends StateAdapter {
-
-    int i = 0;
     public InitialState(Model model){
         super(model);
     }
@@ -29,13 +27,14 @@ public class InitialState extends StateAdapter {
 
     @Override
     public IState reserves() {
-        getModel().queryReserves();
         return new UserState(getModel());
     }
 
     @Override
     public States getAtualState() {
-        // ir ver ao modelo se está logado e retornar consoante isso
+        if(getModel().isLogged()){
+            return States.INITIAL_LOGIN;
+        }
         return States.INITIAL_LOGOUT;
     }
 }

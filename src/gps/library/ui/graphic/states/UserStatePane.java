@@ -15,6 +15,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,7 +108,10 @@ public class UserStatePane extends BorderPane {
         setCenter(scrollPane);
         setBottom(botGrid);
 
-        logout.setOnAction(e -> libObs.logout());
+        logout.setOnAction(e -> {
+            libObs.capacity();
+            libObs.logout();
+        });
 
         capacity.setOnAction(e -> libObs.capacity());
 
@@ -119,20 +124,21 @@ public class UserStatePane extends BorderPane {
 
     private void update(){
         setVisible(libObs.getAtualState() == States.USER);
-
-        List<?> reserves = libObs.getReserves();
-        for(int i = 0; i < reserves.size(); i++){
-            final int id = i;
+        gridPane.getChildren().clear();
+        int id = 0;
+        HashMap<Integer, String[]> reserves = libObs.getReserves();
+        for(Integer i : reserves.keySet()) {
             StackPane fillLeft = new StackPane();
+            StackPane fillMid = new StackPane();
             StackPane fillRight = new StackPane();
             MyButton cancel = new MyButton("X");
             cancel.setBackground(null);
-            MyLabel reserve = new MyLabel(reserves.get(i).toString(), minor);
-
+            MyLabel reserve = new MyLabel(reserves.get(i)[0], minor);
+//            reserves.get(i)[2];
             fillLeft.getChildren().add(reserve);
             fillRight.getChildren().add(cancel);
-
-            if(i%2 == 0) {
+            System.out.println(id);
+            if(id % 2 == 0) {
                 fillLeft.setBackground(btnBkg);
                 fillRight.setBackground(btnBkg);
             }
@@ -145,25 +151,26 @@ public class UserStatePane extends BorderPane {
                 ButtonType no = new ButtonType("Não", ButtonBar.ButtonData.NO);
                 Alert alert = new Alert(Alert.AlertType.ERROR, "", yes, no);
                 alert.setTitle("Alerta");
-                alert.setHeaderText("Para esse dia já não existem gabinetes livres.");
+                alert.setHeaderText("Deseja mesmo cancelar a reserva?");
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if(result.isPresent()){
                     if(result.get() == yes){
-                        libObs.cancelReserve(id);
+                        libObs.cancelReserve(i);
                     }
                 }
             });
+            id++;
         }
 
         /** TODO DEBATER ESTA PARTE DE IR BUSCAR AS PENALIZAÇÕES */
         if(libObs.getAtualState() == States.USER) {
             int penalties = libObs.getPenalties();
-            if (penalties > 1) {
+            if (penalties >= 1) {
                 ButtonType ok = new ButtonType("Sair", ButtonBar.ButtonData.OK_DONE);
                 Alert alert = new Alert(Alert.AlertType.ERROR, "", ok);
                 alert.setTitle("Alerta");
-                alert.setHeaderText("Cancelou demasiadas reservas. Durante " + 24 * penalties + " horas " +
+                alert.setHeaderText("Cancelou demasiadas reservas. Durante " + penalties + " horas " +
                         "não consegue efetuar reservas.");
                 alert.showAndWait();
                 reserveOffice.setDisable(true);

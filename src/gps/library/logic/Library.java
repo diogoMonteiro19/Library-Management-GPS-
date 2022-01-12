@@ -3,6 +3,7 @@ package gps.library.logic;
 import gps.library.logic.data.Model;
 import gps.library.logic.states.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Library {
@@ -12,8 +13,8 @@ public class Library {
     public Library(){
         model = new Model();
         state = new InitialState(model);
-//        state = new ReservationState(model);
-        state = new AdminState(model);
+        state = new ReservationState(model);
+//       state = new AdminState(model);
         state.capacity();
     }
 
@@ -63,8 +64,8 @@ public class Library {
         return model.selectedDay(day);
     }
 
-    public <T> boolean selectedHours(T selected){
-        return model.selectedHours(selected);
+    public <T> boolean selectedHours(T selected, T office_id){
+        return model.selectedHours(selected, office_id);
     }
 
     public <T> boolean newReserve(T students){
@@ -79,9 +80,9 @@ public class Library {
         return model.getItworked();
     }
 
-    public List<?> getReserves(){ return model.getReserves(); }
+    public HashMap<Integer, String[]> getReserves(){ return model.getReserves(); }
 
-    public List<?> getAdminReserves() { return model.getAdminReserves(); }
+    public HashMap<Integer, String[]> getAdminReserves() { return model.getAdminReserves(); }
 
     public List<?> getHours() { return model.getHours(); }
 

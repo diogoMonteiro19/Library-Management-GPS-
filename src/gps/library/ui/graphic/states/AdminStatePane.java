@@ -21,6 +21,7 @@ import javafx.scene.text.Font;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -199,7 +200,16 @@ public class AdminStatePane extends BorderPane {
             }
         });
 
-        updateReservesBtn.setOnAction(e -> libObs.getAdminReserves());
+        updateReservesBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
+                update();
+            }
+        });
+
+      //  updateReservesBtn.setOnAction(e -> libObs.getAdminReserves());
+
+        logout.setOnAction(e -> libObs.logout());
 
         setCenter(outGrid);
     }
@@ -233,18 +243,22 @@ public class AdminStatePane extends BorderPane {
     }
 
 
-
-        private void update(){
+    private void update(){
         setVisible(libObs.getAtualState() == States.ADMIN);
         /** TODO VER ESTA CHECKBOX OU SE É PARA POR MESMO UMA CHECKBOX*/
         URL url = getClass().getClassLoader().getResource("gps/library/resources/images/checkbox.png");
         Image icon = new Image(String.valueOf(url));
 
-        /** TODO IR BUSCAR AS RESERVAS DO ADMIN */
-        List<?> reserves = libObs.getAdminReserves();
-        for(int i = 0; i < reserves.size(); i++){
+        URL urlempty = getClass().getClassLoader().getResource("gps/library/resources/images/checkboxempty.png");
+        Image iconempty = new Image(String.valueOf(urlempty));
+
+
+        int id = 0;
+        HashMap<Integer, String[]> reserves = libObs.getAdminReserves();
+        for(Integer i : reserves.keySet()) {
             ImageView view = new ImageView(icon);
-            final int id = i;
+            ImageView empty = new ImageView(iconempty);
+
             StackPane fillLeft = new StackPane();
             StackPane fillMid = new StackPane();
             StackPane fillRight = new StackPane();
@@ -253,37 +267,59 @@ public class AdminStatePane extends BorderPane {
             cancel.setBackground(null);
             confirm.setBackground(null);
             confirm.setGraphic(view);
-            MyLabel reserve = new MyLabel(reserves.get(i).toString(), minor);
+            MyLabel reserve = new MyLabel(reserves.get(i)[0], minor);
 
             fillLeft.getChildren().add(reserve);
             fillMid.getChildren().add(cancel);
-            fillRight.getChildren().add(confirm);
+            if (reserves.get(i)[1].equals("1")) {
+                confirm.setGraphic(view);
+                confirm.setDisable(true);
+            } else {
+                confirm.setGraphic(empty);
+            }
 
-            if(i%2 == 0) {
+            fillRight.getChildren().add(confirm);
+            if (id == 0) {
                 fillLeft.setBackground(btnBkg);
                 fillMid.setBackground(btnBkg);
                 fillRight.setBackground(btnBkg);
+                id = 1;
             }
-            gridPane.add(fillLeft, 0, i+1);
-            gridPane.add(fillMid, 1, i+1);
-            gridPane.add(fillRight, 2, i+1);
+            gridPane.add(fillLeft, 0, i + 1);
+            gridPane.add(fillMid, 1, i + 1);
+            gridPane.add(fillRight, 2, i + 1);
             GridPane.setFillWidth(fillLeft, true);
             GridPane.setFillHeight(fillLeft, true);
             cancel.setOnAction(e -> {
-                ButtonType yes = new ButtonType("Sim",  ButtonBar.ButtonData.YES);
+                ButtonType yes = new ButtonType("Sim", ButtonBar.ButtonData.YES);
                 ButtonType no = new ButtonType("Não", ButtonBar.ButtonData.NO);
                 Alert alert = new Alert(Alert.AlertType.ERROR, "", yes, no);
                 alert.setTitle("Alerta");
                 alert.setHeaderText("Deseja mesmo cancelar a reserva?");
 
                 Optional<ButtonType> result = alert.showAndWait();
-                if(result.isPresent()){
-                    if(result.get() == yes){
-                        libObs.cancelReserve(id);
+                if (result.isPresent()) {
+                    if (result.get() == yes) {
+                        libObs.cancelReserve(i);
                     }
                 }
             });
-            confirm.setOnAction(e -> libObs.confirmReserve(id));
+            confirm.setOnAction(e -> {
+                ButtonType yes = new ButtonType("Sim", ButtonBar.ButtonData.YES);
+                ButtonType no = new ButtonType("Não", ButtonBar.ButtonData.NO);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "", yes, no);
+                alert.setTitle("Alerta");
+                alert.setHeaderText("Deseja mesmo confirmar a reserva?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent()) {
+                    if (result.get() == yes) {
+                        libObs.confirmReserve(i);
+                    }
+                }
+            });
         }
     }
+
+
 }

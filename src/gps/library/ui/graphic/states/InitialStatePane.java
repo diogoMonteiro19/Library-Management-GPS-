@@ -72,7 +72,6 @@ public class InitialStatePane extends BorderPane {
         login.setOnAction(e -> libObs.login()); // ir para o estado de login
 
         reserves.setOnAction(e -> libObs.reserves()); // ir para o estado do painel de usuario
-
     }
 
     public void registerObserver(){
@@ -91,11 +90,9 @@ public class InitialStatePane extends BorderPane {
 
             Optional<ButtonType> result = alert.showAndWait();
             center = new VBox(30, welcomeTxt, noteTxt, progress);
-
         }
         else{
             center = new VBox(30, welcomeTxt, noteTxt, progress, percent);
-
         }
 
 
@@ -114,7 +111,6 @@ public class InitialStatePane extends BorderPane {
         bottom.setAlignment(Pos.BOTTOM_RIGHT);
         setCenter(center);
         setBottom(bottom);
-        System.out.println(center.getWidth());
 
         percent.setText(String.valueOf(libObs.getCapacity())+ " %");
     }

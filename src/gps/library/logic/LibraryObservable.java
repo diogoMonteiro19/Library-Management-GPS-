@@ -2,6 +2,7 @@ package gps.library.logic;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.HashMap;
 import java.util.List;
 
 public class LibraryObservable {
@@ -84,8 +85,8 @@ public class LibraryObservable {
         return lib.selectedDay(day);
     }
 
-    public <T> boolean selectedHours(T selected){
-        return lib.selectedHours(selected);
+    public <T> boolean selectedHours(T selected, T office_id){
+        return lib.selectedHours(selected, office_id);
     }
 
     public <T> boolean newReserve(T students){
@@ -100,9 +101,9 @@ public class LibraryObservable {
         return lib.getItworked();
     }
 
-    public List<?> getReserves(){ return lib.getReserves(); }
+    public HashMap<Integer, String[]> getReserves(){ return lib.getReserves(); }
 
-    public List<?> getAdminReserves() { return lib.getAdminReserves(); }
+    public HashMap<Integer, String[]> getAdminReserves() { return lib.getAdminReserves(); }
 
     public List<?> getHours(){ return lib.getHours(); }
 

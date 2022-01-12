@@ -28,6 +28,12 @@ public class AdminState extends StateAdapter {
     }
 
     @Override
+    public IState logout() {
+        getModel().logout();
+        return new InitialState(getModel());
+    }
+
+    @Override
     public States getAtualState(){
         return States.ADMIN;
     }

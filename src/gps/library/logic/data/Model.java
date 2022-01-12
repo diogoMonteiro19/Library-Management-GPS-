@@ -1,31 +1,29 @@
 package gps.library.logic.data;
 
+import gps.library.logic.connection.DBManager;
 import java.sql.*;
-import java.time.Instant;
-import java.util.ArrayList;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 
 public class Model {
-    int capacity = 19;
-    boolean itworked = false;
+    int capacity = 0;
+    Timestamp day;
+    int office_id;
 
-    /**
-     * @return {@code true} if user is logged, {@code false} if
-     * he isn't
-     */
-    public boolean isLogged(){
-        return true;
-    }
+    DBManager dbManager = new DBManager();
 
     /**
      * Login a user querying the database
-     * @param mail - user mail
-     * @param password - user password
+     * @param //mail - user mail
+     * @param //password - user password
      * @return {@code true} if success, {@code false} if failed.
      */
     public boolean login(String mail, String password){
-        return true;
+        return dbManager.login(mail, password);
     }
+
 
     /**
      * Register a user on the database
@@ -35,30 +33,37 @@ public class Model {
      * @param confPassword - same password checker
      * @return {@code true} if success, {@code false} if failed.
      */
-    public boolean register(String number, String mail, String password, String confPassword){
-        return true;
+    public boolean register(String number, String mail, String password,String confPassword){
+        if(!password.equals(confPassword)){
+            dbManager.setItworked(false);
+            return false;
+        }
+        return dbManager.createNewUser(mail, password, Integer.parseInt(number));
+    }
+
+    /**
+     * @return {@code true} if user is logged, {@code false} if
+     * he isn't
+     */
+    public boolean isLogged(){
+        return dbManager.isLogged();
+    }
+
+    /**
+     * Gets the state of the logged user.
+     * @return true if it's an admin, false if it's a normal user
+     */
+    public boolean isAdmin(){
+        return dbManager.isAdmin();
     }
 
     /**
      * Logout a user...Nothing to do with database
      */
     public void logout(){
-
+        dbManager.logout();
     }
 
-    /**
-     * Gets the reserves from the database for the given user
-     */
-    public void queryReserves(){
-
-    }
-
-    /**
-     * Gets the reserves from the database to the admin
-     */
-    public void queryAdminReserves(){
-
-    }
 
     /**
      * Queries the capacity from the database
@@ -66,28 +71,8 @@ public class Model {
      */
     public void queryCapacity()
     {
-
-        try{
-        //TODO: meter conn em variavel da classe?
-        String myUrl = "jdbc:sqlite:library.db";
-        Connection conn = DriverManager.getConnection(myUrl);
-        Statement st = conn.createStatement();
-
-        ResultSet rs = st.executeQuery("SELECT capacity FROM capacity");
-        int capacity_queryed=-1;
-        while (rs.next())
-        {
-            capacity_queryed = rs.getInt("capacity");
-            break;
-        }
-
-        capacity = capacity_queryed;
-
-        }catch (Exception e){
-
-            capacity = -1;
-
-        }
+        dbManager.queryCapacity();
+        capacity = dbManager.getCapacity();
     }
 
     /**
@@ -95,27 +80,11 @@ public class Model {
      * @param capacity - percentage of capacity
      */
     public void updateCapacity(int capacity){
-        try{
-            //TODO: meter conn em variavel da classe?
-            String myUrl = "jdbc:sqlite:library.db";
-            Connection conn = DriverManager.getConnection(myUrl);
-            Statement st = conn.createStatement();
-
-            st.executeUpdate("update capacity set capacity = " + capacity);
-            itworked = true;
-        }catch (Exception e){
-            System.err.println("Problema na query à base de dados!!!!\nContacte o administrador do sistema");
-            itworked=false;
-        }
+        dbManager.updateCapacity(capacity);
     }
 
-    /**
-     * Confirmation of a reserve from the admin
-     * @param id - {@code int} representing the id
-     *          of the reserve
-     */
     public void confirmReserve(int id){
-
+        dbManager.confirmReserve(id);
     }
 
     /**
@@ -125,7 +94,7 @@ public class Model {
      * @param id - the reservation {@code id} on the reserves list
      */
     public void cancelReserve(int id){
-
+        dbManager.cancelReserve(id);
     }
 
     /**
@@ -136,8 +105,15 @@ public class Model {
      * @return {@code true} if there's available hours, {@code false} if there isn't
      */
     public <T> boolean selectedDay(T day){
-        // Fazer logo aqui query das horas que se pode ter
-        return false;
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            java.util.Date parsedDate = (java.util.Date) dateFormat.parse((String) day);
+            Timestamp timestamp = new Timestamp(parsedDate.getTime());
+            this.day = timestamp;
+        } catch(Exception e) { //this generic but you can control another types of exception
+            e.printStackTrace();
+        }
+        return true;
     }
 
     /**
@@ -146,7 +122,18 @@ public class Model {
      * @param <T> - type from the {@code List}
      * @return - decide the type of return
      */
-    public <T> boolean selectedHours(T selectedFromUser){
+    public <T> boolean selectedHours(T selectedFromUser, T office_id){
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+            System.out.println(selectedFromUser);
+            java.util.Date parsedDate = (java.util.Date) dateFormat.parse((String) selectedFromUser);
+            Timestamp timestamp = new Timestamp(parsedDate.getTime());
+            day.setHours(timestamp.getHours());
+            this.office_id = (int) office_id;
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
@@ -159,34 +146,30 @@ public class Model {
      * @return - decide the type of return
      */
     public <T> boolean newReserve(T students){
-        return true;
+        dbManager.verifyStudents((List<Integer>) students);
+        if(!dbManager.isItworked()){
+            return false;
+        }
+        else {
+            return dbManager.newReserve(day, (List<Integer>) students, office_id);
+        }
     }
 
     /**
      * Gets the list of reserves queried from this user
      * @return a list of all reserves of this user
      */
-    public List<?> getReserves(){
-        List<Timestamp> debug = new ArrayList<>();
-        for(int i = 0; i < 50; i++){
-            Timestamp ts = Timestamp.from(Instant.now());
-            debug.add(ts);
-        }
-        return debug;
+    public HashMap<Integer, String[]> getReserves() {
+        return dbManager.getReserves();
     }
 
     /**
      * Gets the list of reserves for the admin
      * @return a list of reserves from
-     * AQUI NAO SEI SE QUEREM METER DESTE DIA OU O QUE
+     *
      */
-    public List<?> getAdminReserves(){
-        List<Timestamp> debug = new ArrayList<>();
-        for(int i = 0; i < 50; i++){
-            Timestamp ts = Timestamp.from(Instant.now());
-            debug.add(ts);
-        }
-        return debug;
+    public HashMap<Integer, String[]> getAdminReserves() {
+        return dbManager.getAdminReserves();
     }
 
     /**
@@ -196,20 +179,22 @@ public class Model {
     public int getCapacity(){
         return capacity;
     }
+
+    /**
+     * If everything went fine
+     * @return {@code true} if everything went correctly,
+     * {@code false} if something failed.
+     */
     public boolean getItworked(){
-        return itworked;
+        return dbManager.isItworked();
     }
 
     /**
      * Gets the hours that an office is available
      * @return a {@code List} with all the available hours
      */
-    public List<?> getHours(){
-        List<Integer> debug = new ArrayList<>();
-        for(int i = 0; i < 5; i++){
-            debug.add(10 + i);
-        }
-        return debug;
+    public List<?> getHours() {
+        return dbManager.getHours(day);
     }
 
     /**
@@ -217,6 +202,6 @@ public class Model {
      * @return {@code int} - the number of penalties
      */
     public int getPenalties(){
-        return 2;
+        return dbManager.getPenalties();
     }
 }

@@ -77,6 +77,15 @@ public class ReservationStatePane extends BorderPane {
         datePicker.setValue(LocalDate.now());
         datePicker.getEditor().setFont(minor);
 
+        LocalDate minDate = LocalDate.now();
+        LocalDate maxDate = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), LocalDate.now().getDayOfMonth()+2);
+        datePicker.setDayCellFactory(d ->
+                new DateCell() {
+                    @Override public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setDisable(item.isAfter(maxDate) || item.isBefore(minDate));
+                    }});
+
         dates = new HBox(10, date, datePicker);
         dates.setAlignment(Pos.CENTER);
 
@@ -118,49 +127,50 @@ public class ReservationStatePane extends BorderPane {
     private void update(){
         setVisible(libObs.getAtualState() == States.RESERVATION);
         getChildren().clear();
+
         createWindow();
     }
 
     private void updateHours(){
-        // FAZER DESDE QUE ABRE A BIBLIOTECA
-        List<?> available = libObs.getHours();
 
-        /** TODO DECIDIR O QUE MANDAR AQUI TAMBÉM */
-        /* NESTE CASO ESTÁ STRING PARA DEBUG */
-        List<String> selected = new ArrayList<>();
+        List<Integer> available = (List<Integer>) libObs.getHours();
+
+        final String[] selected = new String[1];
         getChildren().clear();
 
+        final int[] office_id = {0};
         /* TOP */
 
         lbl = new MyLabel("Para esse dia existem as seguintes" +
                 " horas disponíveis: ", minor);
 
+        ToggleGroup tg = new ToggleGroup();
         /* HOURS */
         hours = new VBox(10);
-        for(int i = 0; i < 10; i++){
+        for(int i = 9; i <= 22; i++){
+            final int finalI = i;
             HBox line = new HBox(10);
-            CheckBox cb = new CheckBox(new String("1" + i + ":00"));
-            cb.setDisable(true);
-            for(int j=0; j<available.size(); j++){
-                if((int) available.get(j) == 10+i){
-                    cb.setDisable(false);
-                }
+            RadioButton rb = new RadioButton(new String( i + ":00"));
+//            CheckBox cb = new CheckBox(new String( i + ":00"));
+            rb.setDisable(true);
+            if(available.get(i-9) <= 4){
+                rb.setDisable(false);
             }
 
-            cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            rb.selectedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observableValue, Boolean wasSelected, Boolean isSelected) {
                     if(isSelected){
-                        selected.add(cb.getText());
-                    }else{
-                        selected.remove(cb.getText());
+                        selected[0] = rb.getText();
+                        office_id[0] = available.get(finalI-9);
                     }
-                    for(int i = 0; i < selected.size(); i++){
-                        System.out.println(selected.get(i));
-                    }
+//                    for(int i = 0; i < selected[0].size(); i++){
+//                        System.out.println(selected[0].get(i));
+//                    }
                 }
             });
-            line.getChildren().add(cb);
+            rb.setToggleGroup(tg);
+            line.getChildren().add(rb);
             line.setAlignment(Pos.CENTER);
             hours.getChildren().addAll(line);
         }
@@ -180,9 +190,8 @@ public class ReservationStatePane extends BorderPane {
         contentHours.setAlignment(Pos.CENTER);
         contentHours.getChildren().addAll(lbl, hours, bot);
         setCenter(contentHours);
-
         nextHours.setOnAction(e -> {
-            if(libObs.selectedHours(selected)) {
+            if(libObs.selectedHours(selected[0], office_id[0]+1)) {
                 updateMembers();
             }
         });
@@ -216,6 +225,11 @@ public class ReservationStatePane extends BorderPane {
         allStudents.setAlignment(Pos.CENTER);
         allStudents.getChildren().addAll(mid);
 
+        remove.setOnAction(e -> {
+            allStudents.getChildren().remove(mid);
+            nStudents.getAndIncrement();
+        });
+
         /* BUTTONS */
         HBox bot = new HBox(25);
         cancelMembers = new MyButton("Cancelar");
@@ -239,6 +253,11 @@ public class ReservationStatePane extends BorderPane {
                 newMid.getChildren().addAll(newStudent, remove);
                 allStudents.getChildren().add(newMid);
                 nStudents.getAndIncrement();
+                remove.setOnAction(event -> {
+                    newMid.setVisible(false);
+                    allStudents.getChildren().remove(newMid);
+                    nStudents.getAndDecrement();
+                });
             }else{
                 Popup popup = new Popup();
                 MyLabel text = new MyLabel("Máximo pessoas atingido!", minor);
@@ -274,6 +293,16 @@ public class ReservationStatePane extends BorderPane {
                         libObs.backToUser();
                     }
                 }
+            }
+            boolean worked = libObs.getItworked();
+            if (!worked)
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "");
+                alert.setTitle("Alerta");
+                alert.setHeaderText("Não existe nenhum estudante com algum desses números.");
+
+                Optional<ButtonType> result = alert.showAndWait();
+
             }
         });
 

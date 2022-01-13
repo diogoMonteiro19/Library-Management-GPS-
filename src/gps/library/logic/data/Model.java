@@ -81,6 +81,7 @@ public class Model {
      */
     public void updateCapacity(int capacity){
         dbManager.updateCapacity(capacity);
+        queryCapacity();
     }
 
     public void confirmReserve(int id){

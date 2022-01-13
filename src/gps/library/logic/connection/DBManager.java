@@ -1,7 +1,5 @@
 package gps.library.logic.connection;
 
-import logIn.LogIn;
-
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -10,8 +8,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class DBManager {
     Connection conn;
@@ -27,7 +23,7 @@ public class DBManager {
 
 
     public DBManager(){
-        String myUrl = "jdbc:sqlite:library.db";
+        String myUrl = "jdbc:sqlite::resource:library.db";
         try {
             conn = DriverManager.getConnection(myUrl);
         }catch (SQLException e) {
@@ -150,10 +146,9 @@ public class DBManager {
 
     public void updateCapacity(int capacity){
         try{
-            //TODO: meter conn em variavel da classe?
             stmt = conn.createStatement();
 
-            stmt.executeUpdate("update capacity set capacity = " + capacity);
+            stmt.executeUpdate("update capacity set capacity = " + capacity + ", date = current_timestamp");
             itworked = true;
         }catch (Exception e){
             System.err.println("Problema na query à base de dados!!!!\nContacte o administrador do sistema" + e);

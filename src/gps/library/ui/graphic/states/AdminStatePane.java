@@ -212,7 +212,11 @@ public class AdminStatePane extends BorderPane {
             update();
         });
 
-        logout.setOnAction(e -> libObs.logout());
+        logout.setOnAction(e -> {
+                libObs.capacity();
+                libObs.logout();
+                libObs.forceUpdate();
+        });
 
         setCenter(outGrid);
     }

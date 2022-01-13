@@ -5,13 +5,10 @@ import gps.library.logic.States;
 import gps.library.ui.graphic.MyButton;
 import gps.library.ui.graphic.MyLabel;
 import gps.library.ui.graphic.MyProgressBar;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.chart.BarChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.Optional;
@@ -82,7 +79,7 @@ public class InitialStatePane extends BorderPane {
         int capacity = libObs.getCapacity();
         progress = new MyProgressBar((double) libObs.getCapacity() / 100);
 
-        if (capacity == -1)
+        if (capacity == -1 && (libObs.getAtualState() == States.INITIAL_LOGIN || libObs.getAtualState() == States.INITIAL_LOGOUT))
         {
             Alert alert = new Alert(Alert.AlertType.ERROR, "");
             alert.setTitle("Alerta");

@@ -42,7 +42,6 @@ public class ReservationStatePane extends BorderPane {
 
     /* HOURS WINDOW */
     MyLabel lbl;
-    ScrollPane scrollPane;
     MyButton cancelHours;
     MyButton nextHours;
     VBox hours;

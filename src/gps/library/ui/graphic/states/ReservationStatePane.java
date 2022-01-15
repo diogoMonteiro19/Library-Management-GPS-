@@ -15,8 +15,10 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Popup;
+import javafx.util.StringConverter;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +79,33 @@ public class ReservationStatePane extends BorderPane {
         datePicker = new DatePicker();
         datePicker.setValue(LocalDate.now());
         datePicker.getEditor().setFont(minor);
+        datePicker.getEditor().setDisable(true);
+        datePicker.getEditor().setOpacity(1);
+
+        datePicker.setConverter(new StringConverter<LocalDate>() {
+            String pattern = "dd/MM/yyyy";
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+
+            {
+                datePicker.setPromptText(pattern.toLowerCase());
+            }
+
+            @Override public String toString(LocalDate date) {
+                if (date != null) {
+                    return dateFormatter.format(date);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, dateFormatter);
+                } else {
+                    return null;
+                }
+            }
+        });
 
         LocalDate minDate = LocalDate.now();
         LocalDate maxDate = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), LocalDate.now().getDayOfMonth()+2);
@@ -231,6 +260,7 @@ public class ReservationStatePane extends BorderPane {
         allStudents.getChildren().addAll(mid, error);
 
         remove.setOnAction(e -> {
+            students.remove(student);
             allStudents.getChildren().removeAll(mid, error);
             nStudents.getAndDecrement();
         });
@@ -280,6 +310,7 @@ public class ReservationStatePane extends BorderPane {
                 allStudents.getChildren().addAll(newMid, error);
                 nStudents.getAndIncrement();
                 remove.setOnAction(event -> {
+                    students.remove(newStudent);
                     newMid.setVisible(false);
                     allStudents.getChildren().removeAll(newMid, error);
                     nStudents.getAndDecrement();
@@ -315,7 +346,6 @@ public class ReservationStatePane extends BorderPane {
         });
 
         nextMembers.setOnAction(e -> {
-            /** TODO DECIDIR O QUE MANDAR AQUI */
             List<Integer> studentsNumber = new ArrayList<>();
             for(TextField s : students){
                 if(!s.getText().isBlank() || !s.getText().isEmpty()){
